@@ -1,5 +1,4 @@
 import traceback
-from collections import deque
 from pathlib import Path
 from typing import Any
 
@@ -8,7 +7,7 @@ from prompt_toolkit import PromptSession
 from lib.command import Command, CommandRegistry
 from lib.history import History
 from lib.lexer import Lexer
-from lib.pretty import PrettyPrinter, PrettyPrinterRegistry
+from lib.pretty import PrettyPrinterRegistry
 from lib.state import State
 
 
