@@ -17,3 +17,8 @@ class Lexer:
         token = self.tokens.popleft()
         self.spent_tokens.append(token)
         return token
+
+    def peek(self) -> Optional[str]:
+        if len(self.tokens) == 0:
+            return None
+        return self.tokens[0]
