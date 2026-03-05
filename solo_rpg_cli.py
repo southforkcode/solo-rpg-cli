@@ -1,20 +1,26 @@
 import traceback
+from collections import deque
+from pathlib import Path
 from typing import Any
 
 from prompt_toolkit import PromptSession
 
 from lib.command import Command, CommandRegistry
+from lib.history import History
 from lib.lexer import Lexer
+from lib.pretty import PrettyPrinter, PrettyPrinterRegistry
 from lib.state import State
-
-QUIT_REQUESTED = "__quit_requested"
 
 
 class REPLEnvironment:
     def __init__(self):
         self.session = PromptSession()
         self.state = State()
+        self.history = History()
         self.command_registry = CommandRegistry()
+        self.pretty_printer_registry = PrettyPrinterRegistry()
+        self._quit_requested = False
+        self._save_result = True
 
     def run(self):
         # register help command and aliases
@@ -37,21 +43,39 @@ class REPLEnvironment:
                 self.exit_help,
             )
         )
+        # register last command and aliases
+        self.command_registry.register(
+            Command.from_impl(
+                "last",
+                ["_"],
+                "Get the result of the last command",
+                self.last_command,
+                self.last_help,
+            )
+        )
+        self.command_registry.register_directory(Path("lib/commands"))
+
+        self.pretty_printer_registry.register_directory(Path("lib/pretty_printers"))
 
         while True:
+            self._save_result = True
             try:
                 text = self.read()
                 lexer = Lexer(text)
                 result = self.execute(lexer)
+                if self._save_result and result is not None:
+                    self.history.add(text, result)
                 self.print(result)
-                if self.state.get(QUIT_REQUESTED):
+                if self._quit_requested:
                     break
             except KeyboardInterrupt:
-                break
+                self._quit_requested = True
             except Exception as e:
                 print(f"Error: {e}")
                 traceback.print_exc()
                 continue
+            if self._quit_requested:
+                break
 
     def read(self):
         return self.session.prompt("> ")
@@ -64,16 +88,19 @@ class REPLEnvironment:
         if command is None:
             print(f"Command '{cmd}' not found")
             return None
-        result = command.execute(lexer, self.state)
+        try:
+            result = command.execute(lexer, self.state)
+        except SyntaxError as e:
+            print(e)
+            command.help()
+            return None
         return result
 
     def print(self, result: Any) -> None:
-        if result is None:
-            return
-        print(result)
+        self.pretty_printer_registry.print(result)
 
     def exit_command(self, lexer: Lexer, state: State) -> Any:
-        self.state.set(QUIT_REQUESTED, True)
+        self._quit_requested = True
         return None
 
     def exit_help(self):
@@ -94,6 +121,19 @@ class REPLEnvironment:
 
     def help_help(self):
         print("help [command] - Show help for a command")
+
+    def last_command(self, lexer: Lexer, state: State) -> Any:
+        # was an offset provided
+        offset_str = lexer.next()
+        if offset_str is None:
+            # return all last results
+            return self.history.get_all()
+        else:
+            offset = int(offset_str)
+            return self.history.get(offset)
+
+    def last_help(self):
+        print("last [offset] - Get the result of the last command")
 
 
 if __name__ == "__main__":
