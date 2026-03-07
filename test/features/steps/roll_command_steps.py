@@ -2,10 +2,10 @@ from pathlib import Path
 
 from behave import then, when
 
-from lib.commands.roll_command import RollCommand
-from lib.dice_roller import DiceRerollType
-from lib.lexer import Lexer
-from lib.state import State
+from lib.core.dice_roller import DiceRerollType
+from lib.core.state import State
+from lib.presentation.commands.roll_command import RollCommand
+from lib.presentation.lexer import Lexer
 
 
 @when('I execute the roll command with "{args}"')

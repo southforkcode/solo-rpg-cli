@@ -5,8 +5,8 @@ import sys
 from pathlib import Path
 from typing import Any, Callable, Optional
 
-from lib.lexer import Lexer
-from lib.state import State
+from lib.core.state import State
+from lib.presentation.lexer import Lexer
 
 
 class Command:

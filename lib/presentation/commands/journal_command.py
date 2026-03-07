@@ -3,10 +3,10 @@ from typing import Any
 
 import prompt_toolkit
 
-from lib.command import Command
-from lib.journal import JournalEntry
-from lib.lexer import Lexer
-from lib.state import State
+from lib.core.journal import JournalEntry
+from lib.core.state import State
+from lib.presentation.command import Command
+from lib.presentation.lexer import Lexer
 
 
 def prompt(*args, **kwargs):

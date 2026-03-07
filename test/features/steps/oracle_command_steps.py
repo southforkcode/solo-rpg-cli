@@ -2,9 +2,9 @@ from pathlib import Path
 
 from behave import then, when
 
-from lib.commands.oracle_command import OracleCommand
-from lib.lexer import Lexer
-from lib.state import State
+from lib.core.state import State
+from lib.presentation.commands.oracle_command import OracleCommand
+from lib.presentation.lexer import Lexer
 
 
 @when("I execute the oracle command with '{args}'")

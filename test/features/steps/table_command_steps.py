@@ -3,9 +3,9 @@ from pathlib import Path
 
 from behave import given, then, when
 
-from lib.commands.table_command import TableCommand
-from lib.lexer import Lexer
-from lib.state import State
+from lib.core.state import State
+from lib.presentation.commands.table_command import TableCommand
+from lib.presentation.lexer import Lexer
 
 
 @given('a game directory with a "tables" folder containing:')

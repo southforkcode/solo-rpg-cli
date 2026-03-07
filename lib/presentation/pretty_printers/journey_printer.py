@@ -1,7 +1,7 @@
 from typing import Any, List
 
-from lib.journey import Journey
-from lib.pretty import PrettyPrinter
+from lib.core.journey import Journey
+from lib.presentation.pretty import PrettyPrinter
 
 
 class JourneyPrinter(PrettyPrinter):

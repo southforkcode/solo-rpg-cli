@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from lib.repl import REPLEnvironment
+from lib.presentation.repl import REPLEnvironment
 
 if __name__ == "__main__":
     import argparse
@@ -33,5 +33,9 @@ if __name__ == "__main__":
             sys.exit(1)
 
     repl = REPLEnvironment(gamedir_path)
+    repl.command_registry.register_directory(Path("lib/presentation/commands"))
+    repl.pretty_printer_registry.register_directory(
+        Path("lib/presentation/pretty_printers")
+    )
     repl.run()
     print("Bye!")

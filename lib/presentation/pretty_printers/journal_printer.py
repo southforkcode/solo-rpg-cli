@@ -1,8 +1,8 @@
 from datetime import datetime
 from typing import Any, List
 
-from lib.journal import JournalEntry
-from lib.pretty import PrettyPrinter
+from lib.core.journal import JournalEntry
+from lib.presentation.pretty import PrettyPrinter
 
 
 class JournalPrinter(PrettyPrinter):

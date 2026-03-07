@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from lib.table import Table, TableManager
+from lib.core.table import Table, TableManager
 
 
 class TestTable(unittest.TestCase):

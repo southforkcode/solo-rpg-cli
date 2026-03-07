@@ -1,6 +1,6 @@
 from behave import given, then, when
 
-from lib.dice_roller import DiceRerollType, DiceRoller
+from lib.core.dice_roller import DiceRerollType, DiceRoller
 
 
 @given("{num_dice:d} die of {num_sides:d} sides")

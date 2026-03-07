@@ -3,9 +3,9 @@ from pathlib import Path
 
 from behave import given, then, when
 
-from lib.commands.summary_command import SummaryCommand
-from lib.lexer import Lexer
-from lib.state import State
+from lib.core.state import State
+from lib.presentation.commands.summary_command import SummaryCommand
+from lib.presentation.lexer import Lexer
 
 
 @given("a new summary session")

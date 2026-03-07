@@ -6,12 +6,12 @@ from typing import Any
 from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
 
-from lib.command import Command, CommandRegistry
-from lib.history import History
-from lib.lexer import Lexer
-from lib.macro import MacroEvaluator
-from lib.pretty import PrettyPrinterRegistry
-from lib.state import State
+from lib.core.macro import MacroEvaluator
+from lib.core.state import State
+from lib.infrastructure.history import History
+from lib.presentation.command import Command, CommandRegistry
+from lib.presentation.lexer import Lexer
+from lib.presentation.pretty import PrettyPrinterRegistry
 
 
 class REPLEnvironment:
@@ -57,9 +57,7 @@ class REPLEnvironment:
                 self.last_help,
             )
         )
-        self.command_registry.register_directory(Path("lib/commands"))
 
-        self.pretty_printer_registry.register_directory(Path("lib/pretty_printers"))
 
         while True:
             self._save_result = True
@@ -119,7 +117,7 @@ class REPLEnvironment:
                 last_result = self.history.get(0)
                 if last_result is not None:
                     # we need to add to journal. We can just invoke Journal.add
-                    from lib.journal import JournalEntry
+                    from lib.core.journal import JournalEntry
 
                     self.state.journal_manager.add_entry(
                         JournalEntry(
@@ -153,7 +151,7 @@ class REPLEnvironment:
 
             def cb_roll(text: str) -> Any:
                 sub_lexer = Lexer(text)
-                from lib.commands.roll_command import RollCommand
+                from lib.presentation.commands.roll_command import RollCommand
 
                 # fake state execution
                 cmd = RollCommand()
@@ -173,7 +171,7 @@ class REPLEnvironment:
                 return None
 
             if is_journal:
-                from lib.journal import JournalEntry
+                from lib.core.journal import JournalEntry
 
                 # join outputs or use return value
                 final_output = (

@@ -1,7 +1,7 @@
 from rich.console import Console
 
-from lib.dice_roller import DiceRollResult
-from lib.pretty import PrettyPrinter
+from lib.core.dice_roller import DiceRollResult
+from lib.presentation.pretty import PrettyPrinter
 
 
 class DiceRollPrinter(PrettyPrinter):

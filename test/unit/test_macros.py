@@ -2,8 +2,8 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from lib.macro.evaluator import MacroEvaluator, _safe_eval, evaluate_condition
-from lib.macro.manager import MacroManager
+from lib.core.macro.evaluator import MacroEvaluator, _safe_eval, evaluate_condition
+from lib.core.macro.manager import MacroManager
 
 
 class TestMacroManager(unittest.TestCase):
@@ -54,7 +54,7 @@ class TestMacroEvaluator(unittest.TestCase):
         self.assertIn("Undefined variable 'missing_variable'", str(err.exception))
 
     def test_macro_evaluation(self):
-        from lib.macro.grammar import parse_macros
+        from lib.core.macro.grammar import parse_macros
 
         text = (
             "defmacro test_macro val:int\n"
