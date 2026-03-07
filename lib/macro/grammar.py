@@ -5,15 +5,13 @@ from parsimonious.nodes import Node, NodeVisitor
 
 from .models import (
     Assignment,
-    EchoStatement,
+    CallStatement,
     ElifBlock,
-    ExecStatement,
     Expression,
     IfStatement,
     Macro,
     MacroParam,
     ReturnStatement,
-    RollStatement,
     Statement,
 )
 
@@ -34,9 +32,7 @@ MACRO_GRAMMAR = Grammar(
         if_block
         / return_stmt
         / assignment
-        / echo_stmt
-        / roll_stmt
-        / exec_stmt
+        / call_stmt
         / bare_expr
     ) _nl?
 
@@ -48,9 +44,7 @@ MACRO_GRAMMAR = Grammar(
     return_stmt = "return" _ expr_rest
     assignment = ident _ "=" _ expr_rest
 
-    echo_stmt = "echo(" string_arg ")"
-    roll_stmt = "roll(" string_arg ")"
-    exec_stmt = "exec(" string_arg ")"
+    call_stmt = ident "(" string_arg ")"
 
     string_arg = ("\"" ~r"[^\"]*" "\"") / ("'" ~r"[^']*" "'")
 
@@ -153,17 +147,9 @@ class MacroVisitor(NodeVisitor):
         ident, _, _, _, expr = visited_children
         return Assignment(var_name=ident, expr=expr)
 
-    def visit_echo_stmt(self, node: Node, visited_children: list) -> EchoStatement:
-        _, arg, _ = visited_children
-        return EchoStatement(expr=Expression(expr=arg))
-
-    def visit_roll_stmt(self, node: Node, visited_children: list) -> RollStatement:
-        _, arg, _ = visited_children
-        return RollStatement(expr=Expression(expr=arg))
-
-    def visit_exec_stmt(self, node: Node, visited_children: list) -> ExecStatement:
-        _, arg, _ = visited_children
-        return ExecStatement(expr=Expression(expr=arg))
+    def visit_call_stmt(self, node: Node, visited_children: list) -> CallStatement:
+        ident, _, arg, _ = visited_children
+        return CallStatement(func_name=ident, args=[Expression(expr=arg)])
 
     def visit_string_arg(self, node: Node, visited_children: list) -> str:
         # Strip quotes

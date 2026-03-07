@@ -28,7 +28,8 @@ class TestMacroManager(unittest.TestCase):
                 self.assertEqual(macro.params[1].name, "arg2")
                 self.assertEqual(macro.params[1].default, "default")
                 self.assertEqual(len(macro.body), 1)
-                self.assertEqual(macro.body[0].expr.expr, "hello")
+                self.assertEqual(macro.body[0].func_name, "echo")
+                self.assertEqual(macro.body[0].args[0].expr, "hello")
 
 
 class TestMacroEvaluator(unittest.TestCase):

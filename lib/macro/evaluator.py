@@ -5,13 +5,11 @@ from typing import Any, Callable, Dict, List
 
 from .models import (
     Assignment,
-    EchoStatement,
-    ExecStatement,
+    CallStatement,
     Expression,
     IfStatement,
     Macro,
     ReturnStatement,
-    RollStatement,
     Statement,
 )
 
@@ -171,12 +169,8 @@ class MacroEvaluator:
             return self.visit_IfStatement(stmt)
         elif isinstance(stmt, Assignment):
             return self.visit_Assignment(stmt)
-        elif isinstance(stmt, EchoStatement):
-            return self.visit_EchoStatement(stmt)
-        elif isinstance(stmt, RollStatement):
-            return self.visit_RollStatement(stmt)
-        elif isinstance(stmt, ExecStatement):
-            return self.visit_ExecStatement(stmt)
+        elif isinstance(stmt, CallStatement):
+            return self.visit_CallStatement(stmt)
         elif isinstance(stmt, ReturnStatement):
             return self.visit_ReturnStatement(stmt)
         elif isinstance(stmt, Expression):
@@ -203,19 +197,22 @@ class MacroEvaluator:
         self.context[var_name] = val
         return None
 
-    def visit_EchoStatement(self, stmt: EchoStatement) -> Any:
-        expr = interpolate(stmt.expr.expr, self.context)
-        print(expr)
-        self.outputs.append(expr)
-        return None
+    def visit_CallStatement(self, stmt: CallStatement) -> Any:
+        # Interpret the first argument
+        arg_val = ""
+        if stmt.args and isinstance(stmt.args[0], Expression):
+            arg_val = interpolate(stmt.args[0].expr, self.context)
 
-    def visit_RollStatement(self, stmt: RollStatement) -> Any:
-        expr = interpolate(stmt.expr.expr, self.context)
-        return self.roll_cb(expr)
-
-    def visit_ExecStatement(self, stmt: ExecStatement) -> Any:
-        expr = interpolate(stmt.expr.expr, self.context)
-        return self.exec_cb(expr)
+        if stmt.func_name == "echo":
+            print(arg_val)
+            self.outputs.append(arg_val)
+            return None
+        elif stmt.func_name == "roll":
+            return self.roll_cb(arg_val)
+        elif stmt.func_name == "exec":
+            return self.exec_cb(arg_val)
+        else:
+            raise ValueError(f"Unknown function: {stmt.func_name}")
 
     def visit_ReturnStatement(self, stmt: ReturnStatement) -> Any:
         return self._eval_expr(stmt.expr.expr)

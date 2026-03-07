@@ -39,18 +39,9 @@ class ReturnStatement(Statement):
 
 
 @dataclass
-class EchoStatement(Statement):
-    expr: Expression
-
-
-@dataclass
-class RollStatement(Statement):
-    expr: Expression
-
-
-@dataclass
-class ExecStatement(Statement):
-    expr: Expression
+class CallStatement(Statement):
+    func_name: str
+    args: List[Expression]
 
 
 @dataclass
