@@ -35,6 +35,19 @@ def step_impl_execute_oracle(context, args):
         context.error = e
 
 
+@when('I execute the oracle command without arguments')
+def step_impl_execute_oracle_no_args(context):
+    lexer = Lexer("")
+    state = State(base_dir=Path("/tmp/dummy"))
+    command = OracleCommand()
+    context.error = None
+    context.result = None
+    try:
+        context.result = command.execute(lexer, state)
+    except Exception as e:
+        context.error = e
+
+
 @then("the oracle command returns a result")
 def step_impl_returns_result_oracle(context):
     assert context.error is None, f"Expected no error but got: {context.error}"

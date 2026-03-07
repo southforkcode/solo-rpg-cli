@@ -46,12 +46,15 @@ class OracleCommand(Command):
         """
         question = ""
         odds_key = "50/50"
+        args_provided = False
 
         # Parse arguments
         while True:
             token = lexer.next()
             if token is None:
                 break
+            
+            args_provided = True
             
             if token == "--odds":
                 next_token = lexer.next()
@@ -80,6 +83,13 @@ class OracleCommand(Command):
                         odds_table.update(custom_odds)
             except Exception as e:
                 print(f"Warning: Failed to load oracle.json: {e}")
+
+        # If no arguments were provided at all, dump the table and return
+        if not question and odds_key == "50/50" and not args_provided:
+            lines = ["Oracle Probability Table:"]
+            for k, v in odds_table.items():
+                lines.append(f"  {k}: {v}%")
+            return "\n".join(lines)
 
         # Ensure chosen odds_key exists
         if odds_key not in odds_table:

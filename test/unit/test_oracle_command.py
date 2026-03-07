@@ -57,6 +57,13 @@ class TestOracleCommand(unittest.TestCase):
         result = self.command.execute(lexer, self.state)
         self.assertEqual(result, "Oracle: Yes (Question: Is the chest locked?)")
 
+    def test_no_arguments_dumps_table(self):
+        lexer = Lexer("")
+        result = self.command.execute(lexer, self.state)
+        self.assertTrue(result.startswith("Oracle Probability Table:"))
+        self.assertIn("certain: 90%", result)
+        self.assertIn("impossible: 10%", result)
+
     @patch("lib.commands.oracle_command.random.randint")
     def test_config_override(self, mock_randint):
         # Create a mock oracle.json

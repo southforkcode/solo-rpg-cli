@@ -19,3 +19,8 @@ Feature: Oracle Command
     When I execute the oracle command with 'Is the chest locked?'
     Then the oracle command returns a result
     And the oracle result contains the question "Is the chest locked?"
+
+  Scenario: Dump probability table with no arguments
+    When I execute the oracle command without arguments
+    Then the oracle command returns a result
+    And the oracle result starts with "Oracle Probability Table:"
