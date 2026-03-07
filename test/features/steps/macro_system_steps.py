@@ -26,7 +26,7 @@ def step_impl_file_content(context, filename):
 
 @when("I reload macros")
 def step_impl_reload_macros(context):
-    context.repl.macro_manager.load_macros()
+    context.repl.state.macro_manager.load_macros()
 
 
 @when('I run macro "{macro_cmd}"')

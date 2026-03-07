@@ -17,9 +17,7 @@ from lib.state import State
 class REPLEnvironment:
     def __init__(self, gamedir: Path):
         self.gamedir = gamedir
-        self.session: PromptSession = PromptSession(
-            history=FileHistory(str(gamedir / "history"))
-        )
+        self._session: PromptSession | None = None
         self.state = State(base_dir=gamedir)
         self.state.set("gamedir", gamedir)
         self.history = History()
@@ -77,6 +75,8 @@ class REPLEnvironment:
                     break
             except KeyboardInterrupt:
                 self._quit_requested = True
+            except EOFError:
+                self._quit_requested = True
             except Exception as e:
                 print(f"Error: {e}")
                 traceback.print_exc()
@@ -84,7 +84,23 @@ class REPLEnvironment:
             if self._quit_requested:
                 break
 
+    @property
+    def session(self) -> PromptSession:
+        if self._session is None:
+            self._session = PromptSession(
+                history=FileHistory(str(self.gamedir / "history"))
+            )
+        return self._session
+
     def read(self):
+        import sys
+        # Note: In Pytest/Behave environments stdout and stdin are often mocks and not true TTYs.
+        if not sys.stdin.isatty() or not sys.stdout.isatty():
+            print("> ", end="", flush=True)
+            line = sys.stdin.readline()
+            if not line:
+                raise EOFError()
+            return line.rstrip("\n")
         return self.session.prompt("> ")
 
     def execute(self, lexer: Lexer) -> Any:

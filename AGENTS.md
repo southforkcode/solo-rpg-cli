@@ -2,7 +2,8 @@
 
 ## Build/Test Commands
 
-- `make test` - Run the behave unit tests
+- `make test` (Linux/Mac) or `test.bat` (Windows) - Run both the Python unittests and behave feature tests
+- **CRITICAL**: Always keep `Makefile` and `test.bat` exactly in sync. When adding or modifying test commands, update both files correspondingly.
 
 ## Development
 
@@ -26,7 +27,7 @@
 
 ## Testing
 
-- Run `make test` to run the behave unit tests
+- Run `make test` (Linux/Mac) or `test.bat` (Windows) to run all unit and feature tests
 - Run `python solo_rpg_cli.py <gamedir>` to run the CLI
 
 ## Coding Standards
