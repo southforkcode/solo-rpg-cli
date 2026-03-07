@@ -36,6 +36,7 @@ class VarCommand(Command):
             return None
 
     def _execute_set(self, lexer: Lexer, state: State) -> Any:
+        """Create or update a variable with a parsed numeric or string value."""
         name = lexer.next()
         if not name:
             return "Usage: var set <name> <value>"
@@ -65,6 +66,7 @@ class VarCommand(Command):
         return f"Variable '{name}' set to {parsed_value}."
 
     def _execute_update(self, lexer: Lexer, state: State) -> Any:
+        """Modify an existing numeric variable by a specified increment or decrement."""
         name = lexer.next()
         if not name:
             return "Usage: var update <name> <numeric_change>"
@@ -93,6 +95,7 @@ class VarCommand(Command):
         return f"Variable '{name}' updated to {new_val}."
 
     def _execute_get(self, lexer: Lexer, state: State) -> Any:
+        """Retrieve and format a specific variable's current value."""
         name = lexer.next()
         if not name:
             return "Usage: var get <name>"
@@ -105,6 +108,7 @@ class VarCommand(Command):
         return f"{name}: {val}"
 
     def _execute_list(self, state: State) -> Any:
+        """List all currently tracked globally persisted game variables."""
         vars_dict = state.variable_manager.get_all()
         if not vars_dict:
             return "No variables defined."
@@ -115,6 +119,7 @@ class VarCommand(Command):
         return "\n".join(lines)
 
     def _execute_delete(self, lexer: Lexer, state: State) -> Any:
+        """Delete a given variable from the campaign state."""
         name = lexer.next()
         if not name:
             return "Usage: var delete <name>"
