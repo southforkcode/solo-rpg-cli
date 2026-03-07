@@ -15,7 +15,7 @@ from lib.state import State
 def step_impl_new_session(context):
     context.temp_dir = tempfile.mkdtemp()
     context.gamedir = Path(context.temp_dir)
-    context.state = State()
+    context.state = State(base_dir=context.gamedir)
     context.state.set("gamedir", context.gamedir)
     context.command = JournalCommand()
     context.result = None
@@ -41,8 +41,10 @@ def step_impl_add_journal_entry(context, title, content):
 
 @when('I type the command "{command}"')
 def step_impl_type_command(context, command):
+    # Strip the leading command (journal or j)
     parts = command.split(" ", 1)
     args = parts[1] if len(parts) > 1 else ""
+    # In tests, we need the subcommand as the first token
     context.lexer = Lexer(args)
 
     # We execute immediately if it's not 'add'
