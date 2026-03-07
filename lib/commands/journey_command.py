@@ -44,9 +44,7 @@ class JourneyCommand(Command):
         elif subcommand == "resume":
             return self.state_subcommand(lexer, state, "active", "now active.")
         elif subcommand == "complete":
-            return self.state_subcommand(
-                lexer, state, "completed", "was completed!"
-            )
+            return self.state_subcommand(lexer, state, "completed", "was completed!")
         elif subcommand == "stop":
             return self.state_subcommand(
                 lexer, state, "stopped", "stopped indefinitely."
@@ -103,9 +101,7 @@ class JourneyCommand(Command):
             except ValueError:
                 return "Error: Steps must be an integer."
 
-        state.journey_manager.add_journey(
-            title, description, difficulty, steps
-        )
+        state.journey_manager.add_journey(title, description, difficulty, steps)
 
         content = description
         if not content:
@@ -116,7 +112,7 @@ class JourneyCommand(Command):
         entry = JournalEntry(
             title=f"Started Journey: {title}",
             content=content,
-            timestamp=datetime.now().timestamp()
+            timestamp=datetime.now().timestamp(),
         )
         state.journal_manager.add_entry(entry)
 
@@ -159,7 +155,7 @@ class JourneyCommand(Command):
             return f'Error: Journey "{identifier}" not found.'
 
         if journey.state != "active":
-            return f'Error: Journey is not active ({journey.state}).'
+            return f"Error: Journey is not active ({journey.state})."
 
         old_progress = journey.progress
         step_str = "infinity" if journey.steps is None else str(journey.steps)
@@ -169,7 +165,7 @@ class JourneyCommand(Command):
 
         print(
             f'Journey "{journey.title}" ({journey.state}) progressed '
-            f'from {old_progress}/{step_str} to {journey.progress}/{step_str}.'
+            f"from {old_progress}/{step_str} to {journey.progress}/{step_str}."
         )
 
         try:
@@ -189,9 +185,7 @@ class JourneyCommand(Command):
             entry_title += " (Completed)"
 
         entry = JournalEntry(
-            title=entry_title,
-            content=comment,
-            timestamp=datetime.now().timestamp()
+            title=entry_title, content=comment, timestamp=datetime.now().timestamp()
         )
         state.journal_manager.add_entry(entry)
 
@@ -219,15 +213,12 @@ class JourneyCommand(Command):
 
         step_str = "infinity" if journey.steps is None else str(journey.steps)
 
-        print(
-            f'Journey "{journey.title}" ({journey.progress}/{step_str}) '
-            f'{action_str}'
-        )
+        print(f'Journey "{journey.title}" ({journey.progress}/{step_str}) {action_str}')
 
         entry = JournalEntry(
             title=f"Journey {new_state.capitalize()}: {journey.title}",
             content=comment,
-            timestamp=datetime.now().timestamp()
+            timestamp=datetime.now().timestamp(),
         )
         state.journal_manager.add_entry(entry)
 
@@ -248,12 +239,12 @@ class JourneyCommand(Command):
         try:
             ans = prompt(
                 f'Remove journey "{journey.title}" '
-                f'({journey.progress}/{step_str}) Y/N? '
+                f"({journey.progress}/{step_str}) Y/N? "
             )
         except (EOFError, KeyboardInterrupt):
             return "Cancelled."
 
-        if ans.lower() == 'y':
+        if ans.lower() == "y":
             state.journey_manager.remove_journey(str(journey.id))
             return f'Journey "{journey.title}" removed.'
 
