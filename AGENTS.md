@@ -30,6 +30,19 @@
 - Do not commit to main branch only to feature/bug branch
 - Do not automerge branches - wait to be instructed
 
+## Code Review
+
+- Review all PRs for correctness
+- Review all PRs for style
+- Review all PRs for documentation
+- Review all PRs for tests
+- Review all PRs for performance
+- Review all PRs for security
+- Review all PRs for maintainability
+- Review all PRs for readability
+- Review all PRs for testability
+- Review all PRs for reusability
+- Review all PRs for extensibility
 
 ## Documentation
 

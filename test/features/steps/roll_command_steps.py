@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from behave import then, when
 
 from lib.commands.roll_command import RollCommand
@@ -9,7 +11,7 @@ from lib.state import State
 @when('I execute the roll command with "{args}"')
 def step_impl_execute_roll(context, args):
     lexer = Lexer(args)
-    state = State()
+    state = State(base_dir=Path("/tmp/dummy"))
     command = RollCommand()
     context.error = None
     context.result = None

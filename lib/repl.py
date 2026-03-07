@@ -18,7 +18,8 @@ class REPLEnvironment:
         if not gamedir.exists():
             gamedir.mkdir(parents=True)
         self.session = PromptSession(FileHistory(gamedir / "history"))
-        self.state = State()
+        self.state = State(base_dir=gamedir)
+        self.state.set("gamedir", gamedir)
         self.history = History()
         self.command_registry = CommandRegistry()
         self.pretty_printer_registry = PrettyPrinterRegistry()
