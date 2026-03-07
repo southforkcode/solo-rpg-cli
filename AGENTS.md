@@ -24,3 +24,13 @@
 - Write feature tests for all new requirements
 - Use docstrings for all new code
 - Use type hints for all new code
+
+## Documentation
+
+- Keep documentation up to date
+- `AGENTS.md` - Keep this file up to date with agentic instructions
+- `README.md` - Keep this file up to date with project information
+- `doc\user_guide.md` - Keep this file up to date with information for the user
+- `doc\developer_guide.md` - Keep this file up to date with information for the developer
+- `doc\API.md` - Keep this file up to date with external API information
+
