@@ -57,3 +57,11 @@ def step_impl_output_contains_either(context, expected1, expected2):
     assert (
         expected1 in context.captured_output or expected2 in context.captured_output
     ), f"Expected either '{expected1}' or '{expected2}' in '{context.captured_output}'"
+
+
+@then('the macro output should match regular expression "{pattern}"')
+def step_impl_regexp(context, pattern):
+    import re
+    assert re.search(pattern, context.captured_output) is not None, (
+        f"Expected output to match '{pattern}', got:\n{context.captured_output}"
+    )
