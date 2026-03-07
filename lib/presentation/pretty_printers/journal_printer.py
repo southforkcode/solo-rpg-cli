@@ -10,8 +10,7 @@ class JournalPrinter(PrettyPrinter):
         return isinstance(obj, list) and all(isinstance(x, JournalEntry) for x in obj)
 
     def print(self, obj: object) -> None:
-        from typing import cast
-        obj = cast(list, obj)
+        assert isinstance(obj, list)
         if not obj:
             print("No journal entries found.")
             return

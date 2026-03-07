@@ -14,6 +14,8 @@ from lib.presentation.pretty import PrettyPrinterRegistry
 
 
 class _HelpCommand(Command):
+    """Command to display help information for other commands or list all commands."""
+
     def __init__(self, repl):
         super().__init__()
         self.command = "help"
@@ -22,6 +24,7 @@ class _HelpCommand(Command):
         self.repl = repl
 
     def execute(self, lexer: Lexer, state: State) -> object:
+        """Execute the help command, showing general help or specific command help."""
         command_name = lexer.next()
         if command_name is None:
             self.repl.command_registry.help()
@@ -35,10 +38,13 @@ class _HelpCommand(Command):
         return None
 
     def help(self) -> None:
+        """Print the help documentation for the help command itself."""
         print("help [command] - Show help for a command")
 
 
 class _ExitCommand(Command):
+    """Command to cleanly exit the REPL environment."""
+
     def __init__(self, repl):
         super().__init__()
         self.command = "exit"
@@ -47,14 +53,18 @@ class _ExitCommand(Command):
         self.repl = repl
 
     def execute(self, lexer: Lexer, state: State) -> object:
+        """Execute the exit command, signaling the REPL to terminate."""
         self.repl._quit_requested = True
         return None
 
     def help(self) -> None:
+        """Print the help documentation for the exit command."""
         print("exit|quit|bye - Exit the REPL")
 
 
 class _LastCommand(Command):
+    """Command to retrieve the result of the previously executed command."""
+
     def __init__(self, repl):
         super().__init__()
         self.command = "last"
@@ -63,6 +73,7 @@ class _LastCommand(Command):
         self.repl = repl
 
     def execute(self, lexer: Lexer, state: State) -> object:
+        """Execute the last command, fetching results from command history."""
         offset_str = lexer.next()
         if offset_str is None:
             return self.repl.history.get_all()
@@ -71,6 +82,7 @@ class _LastCommand(Command):
             return self.repl.history.get(offset)
 
     def help(self) -> None:
+        """Print the help documentation for the last command."""
         print("last [offset] - Get the result of the last command")
 
 

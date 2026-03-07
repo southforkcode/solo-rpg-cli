@@ -12,8 +12,7 @@ class JourneyPrinter(PrettyPrinter):
         return isinstance(obj, list) and all(isinstance(x, Journey) for x in obj)
 
     def print(self, obj: object) -> None:
-        from typing import cast
-        obj = cast(list, obj)
+        assert isinstance(obj, list)
         """Print the journey list to stdout."""
         if not obj:
             print("No journeys found.")
