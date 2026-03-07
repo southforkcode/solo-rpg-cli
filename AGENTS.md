@@ -13,6 +13,7 @@
 ## Testing
 
 - Run `make test` to run the behave unit tests
+- Run `python solo_rpg_cli.py <gamedir>` to run the CLI
 
 ## Coding Standards
 
