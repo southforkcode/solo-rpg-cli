@@ -115,13 +115,14 @@ class MacroEvaluator:
         args: List[str],
         exec_cb: Callable[[str], Any],
         roll_cb: Callable[[str], Any],
+        global_vars: Dict[str, Any] = None,
     ) -> None:
         """Initialize parameters and evaluation callbacks."""
         self.macro = macro
         self.args = args
         self.exec_cb = exec_cb
         self.roll_cb = roll_cb
-        self.context: Dict[str, Any] = {}
+        self.context: Dict[str, Any] = global_vars or {}
         self.outputs: List[str] = []
         self._bind_args()
 
