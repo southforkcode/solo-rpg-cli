@@ -1,9 +1,17 @@
 import ast
 import operator
 import re
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable, Dict, List
 
-from .models import Macro
+from .models import (
+    Assignment,
+    CallStatement,
+    Expression,
+    IfStatement,
+    Macro,
+    ReturnStatement,
+    Statement,
+)
 
 
 def interpolate(text: str, context: Dict[str, Any]) -> str:
@@ -145,141 +153,89 @@ class MacroEvaluator:
 
     def run(self) -> Any:
         """Begin evaluating the core macro block."""
-        return self._execute_block(0, len(self.macro.body))
+        return self._execute_block(self.macro.body)
 
-    def _execute_block(self, start: int, end: int) -> Any:
+    def _execute_block(self, block: List[Statement]) -> Any:
         """Execute a subset frame of the macro body lines."""
-        i = start
-        while i < end:
-            line = self.macro.body[i].strip()
-            if not line or line.startswith(";"):
-                i += 1
-                continue
-
-            if line.startswith("if "):
-                cond_str = line[3:]
-                if cond_str.endswith("then"):
-                    cond_str = cond_str[:-4].strip()
-                condition_met = evaluate_condition(cond_str, self.context)
-
-                # find block limits
-                block_start = i + 1
-                block_end, next_block_type, next_cond, end_if_idx = (
-                    self._find_next_block(block_start, end)
-                )
-
-                if condition_met:
-                    ret = self._execute_block(block_start, block_end)
-                    if ret is not None:
-                        return ret
-                    i = end_if_idx + 1  # skip rest
-                else:
-                    # try else / elseif
-                    handled = False
-                    curr_type = next_block_type
-                    curr_cond = next_cond
-                    curr_start = block_end + 1
-
-                    while curr_type in ("elseif", "else"):
-                        next_end, next_type, n_cond, end_if_loc = self._find_next_block(
-                            curr_start, end
-                        )
-
-                        if curr_type == "else" and not handled:
-                            ret = self._execute_block(curr_start, next_end)
-                            if ret is not None:
-                                return ret
-                            handled = True
-                        elif curr_type == "elseif" and not handled:
-                            if evaluate_condition(curr_cond, self.context):
-                                ret = self._execute_block(curr_start, next_end)
-                                if ret is not None:
-                                    return ret
-                                handled = True
-
-                        curr_start = next_end + 1
-                        curr_type = next_type
-                        curr_cond = n_cond
-                        if curr_type == "endif":
-                            break
-
-                    i = end_if_idx + 1
-                continue
-
-            ret = self._execute_line(line)
+        for stmt in block:
+            ret = self.visit(stmt)
             if ret is not None:
+                # Assuming early return functionality
                 return ret
-            i += 1
         return None
 
-    def _find_next_block(self, start: int, end: int) -> Tuple[int, str, str, int]:
-        """Skip through lines finding the extents and conditions for branches."""
-        depth = 0
-        block_end = end
-        next_type = "endif"
-        next_cond = ""
-        end_if_idx = end
-
-        for i in range(start, end):
-            sub = self.macro.body[i].strip()
-            if sub.startswith("if "):
-                depth += 1
-            elif sub == "endif":
-                if depth == 0:
-                    end_if_idx = i
-                    if block_end == end:
-                        block_end = i
-                        next_type = "endif"
-                    break
-                else:
-                    depth -= 1
-            elif depth == 0:
-                if sub.startswith("elseif "):
-                    if block_end == end:
-                        block_end = i
-                        next_type = "elseif"
-                        next_cond = sub[7:]
-                        if next_cond.endswith("then"):
-                            next_cond = next_cond[:-4].strip()
-                elif sub == "else":
-                    if block_end == end:
-                        block_end = i
-                        next_type = "else"
-
-        # ensure end_if_idx is found
-        if end_if_idx == end:
-            for i in range(start, end):
-                if self.macro.body[i].strip() == "endif" and depth == 0:
-                    end_if_idx = i
-
-        return block_end, next_type, next_cond, end_if_idx
-
-    def _execute_line(self, line: str) -> Any:
-        """Parse individual lines for evaluation against operations and bindings."""
-        # assignments: var_name = func(...)
-        # or just func(...)
-        assign_match = re.match(r"^([a-zA-Z0-9_]+)\s*=\s*(.+)$", line)
-        if assign_match:
-            var_name = assign_match.group(1)
-            expr = assign_match.group(2)
-            val = self._eval_expr(expr)
-            self.context[var_name] = val
+    def visit(self, stmt: Statement) -> Any:
+        if isinstance(stmt, IfStatement):
+            return self.visit_IfStatement(stmt)
+        elif isinstance(stmt, Assignment):
+            return self.visit_Assignment(stmt)
+        elif isinstance(stmt, CallStatement):
+            return self.visit_CallStatement(stmt)
+        elif isinstance(stmt, ReturnStatement):
+            return self.visit_ReturnStatement(stmt)
+        elif isinstance(stmt, Expression):
+            return self.visit_Expression(stmt)
         else:
-            if line.startswith("return "):
-                return self._eval_expr(line[7:].strip())
-            else:
-                self._eval_expr(line)
+            raise ValueError(f"Unknown statement type: {type(stmt)}")
+
+    def visit_IfStatement(self, stmt: IfStatement) -> Any:
+        if evaluate_condition(stmt.condition.expr, self.context):
+            return self._execute_block(stmt.if_body)
+
+        for elif_block in stmt.elif_blocks:
+            if evaluate_condition(elif_block.condition.expr, self.context):
+                return self._execute_block(elif_block.body)
+
+        if stmt.else_body is not None:
+            return self._execute_block(stmt.else_body)
+
         return None
 
-    def _eval_expr(self, expr: str) -> Any:
-        """Parse interpolation variables and execute explicit builtin calls."""
-        expr = interpolate(expr, self.context)
+    def visit_Assignment(self, stmt: Assignment) -> Any:
+        var_name = stmt.var_name
+        val = self._eval_expr(stmt.expr.expr)
+        self.context[var_name] = val
+        return None
 
-        # handle echo("...")
-        echo_match = re.match(r"^echo\((.*)\)$", expr)
+    def visit_CallStatement(self, stmt: CallStatement) -> Any:
+        # Interpret the first argument
+        arg_val = ""
+        if stmt.args and isinstance(stmt.args[0], Expression):
+            arg_val = interpolate(stmt.args[0].expr, self.context)
+
+        if stmt.func_name == "echo":
+            print(arg_val)
+            self.outputs.append(arg_val)
+            return None
+        elif stmt.func_name == "roll":
+            return self.roll_cb(arg_val)
+        elif stmt.func_name == "exec":
+            return self.exec_cb(arg_val)
+        else:
+            raise ValueError(f"Unknown function: {stmt.func_name}")
+
+    def visit_ReturnStatement(self, stmt: ReturnStatement) -> Any:
+        return self._eval_expr(stmt.expr.expr)
+
+    def visit_Expression(self, stmt: Expression) -> Any:
+        # bare expression
+        self._eval_expr(stmt.expr)
+        return None
+
+    def _eval_expr(self, expr_text: str) -> Any:
+        """Parse interpolation variables and execute explicit builtin calls."""
+        # For assignment and returns, if they embed roll, echo or exec we'll handle
+        # them via regex fallback, but the grammar is now more strict, so this
+        # acts to maintain backwards-compatibility with inline echo() etc inside
+        # assignment if that was a thing, though the grammar primarily supports
+        # them as Statements.
+
+        expr_text = interpolate(expr_text, self.context)
+
+        # handle inline echo(...)
+        echo_match = re.match(r"^echo\((.*)\)$", expr_text)
         if echo_match:
             content = echo_match.group(1)
-            # strip quotes if present
             if (content.startswith('"') and content.endswith('"')) or (
                 content.startswith("'") and content.endswith("'")
             ):
@@ -288,7 +244,7 @@ class MacroEvaluator:
             self.outputs.append(content)
             return None
 
-        exec_match = re.match(r"^exec\((.*)\)$", expr)
+        exec_match = re.match(r"^exec\((.*)\)$", expr_text)
         if exec_match:
             content = exec_match.group(1)
             if (content.startswith('"') and content.endswith('"')) or (
@@ -297,7 +253,7 @@ class MacroEvaluator:
                 content = content[1:-1]
             return self.exec_cb(content)
 
-        roll_match = re.match(r"^roll\((.*)\)$", expr)
+        roll_match = re.match(r"^roll\((.*)\)$", expr_text)
         if roll_match:
             content = roll_match.group(1)
             if (content.startswith('"') and content.endswith('"')) or (
@@ -308,11 +264,11 @@ class MacroEvaluator:
 
         # fallback safe eval or just return the text
         try:
-            return _safe_eval(expr, self.context)
+            return _safe_eval(expr_text, self.context)
         except ValueError as e:
             # Re-raise explicit ValueError from missing variables or unsupported ops
             if "Undefined variable" in str(e) or "Unsupported syntax" in str(e):
                 raise
-            return expr
+            return expr_text
         except Exception:
-            return expr
+            return expr_text

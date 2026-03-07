@@ -4,7 +4,6 @@ from tempfile import TemporaryDirectory
 
 from lib.macro.evaluator import MacroEvaluator, _safe_eval, evaluate_condition
 from lib.macro.manager import MacroManager
-from lib.macro.models import Macro, MacroParam
 
 
 class TestMacroManager(unittest.TestCase):
@@ -29,7 +28,8 @@ class TestMacroManager(unittest.TestCase):
                 self.assertEqual(macro.params[1].name, "arg2")
                 self.assertEqual(macro.params[1].default, "default")
                 self.assertEqual(len(macro.body), 1)
-                self.assertEqual(macro.body[0].strip(), 'echo("hello")')
+                self.assertEqual(macro.body[0].func_name, "echo")
+                self.assertEqual(macro.body[0].args[0].expr, "hello")
 
 
 class TestMacroEvaluator(unittest.TestCase):
@@ -54,12 +54,16 @@ class TestMacroEvaluator(unittest.TestCase):
         self.assertIn("Undefined variable 'missing_variable'", str(err.exception))
 
     def test_macro_evaluation(self):
-        macro = Macro(
-            "test_macro",
-            [MacroParam("val", "int")],
-            ["my_var = val + 5", "return my_var"],
-            False,
+        from lib.macro.grammar import parse_macros
+
+        text = (
+            "defmacro test_macro val:int\n"
+            "  my_var = val + 5\n"
+            "  return my_var\n"
+            "endmacro\n"
         )
+        macros = parse_macros(text)
+        macro = macros[0]
         evaluator = MacroEvaluator(macro, ["10"], lambda x: None, lambda x: None)
         self.assertEqual(evaluator.run(), 15)
 
