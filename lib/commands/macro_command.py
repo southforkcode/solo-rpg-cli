@@ -6,13 +6,17 @@ from lib.state import State
 
 
 class MacroCommand(Command):
-    def __init__(self):
+    """Command to manage global and local macros."""
+
+    def __init__(self) -> None:
+        """Initialize the macro command."""
         super().__init__()
         self.command = "macro"
         self.aliases = ["macros"]
         self.description = "Manage macros"
 
     def execute(self, lexer: Lexer, state: State) -> Any:
+        """Execute the macro command with the given argument state."""
         subcommand = lexer.next()
         if subcommand is None or subcommand == "list":
             return self.do_list(state)
@@ -24,6 +28,7 @@ class MacroCommand(Command):
             )
 
     def do_list(self, state: State) -> Any:
+        """List all available macros."""
         manager = getattr(state, "macro_manager", None)
         if not manager:
             print("Macro system not initialized.")
@@ -48,6 +53,7 @@ class MacroCommand(Command):
         return None
 
     def do_reload(self, state: State) -> Any:
+        """Reload the macro definitions from disk."""
         manager = getattr(state, "macro_manager", None)
         if not manager:
             print("Macro system not initialized.")
@@ -58,6 +64,7 @@ class MacroCommand(Command):
         return None
 
     def help(self) -> None:
+        """Display help documentation for the macro command."""
         print("macro [list|reload] - Manage macros")
         print("  list - List all macros")
         print("  reload - Reload macros from disk")

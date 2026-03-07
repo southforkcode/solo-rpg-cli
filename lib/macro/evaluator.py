@@ -1,11 +1,15 @@
+import ast
+import operator
 import re
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, List, Tuple
 
 from .models import Macro
 
 
 def interpolate(text: str, context: Dict[str, Any]) -> str:
-    def repl(match):
+    """Interpolate variables like ${var.prop} inside a string using the context."""
+
+    def repl(match) -> str:
         var_path = match.group(1)
         parts = var_path.split(".")
         base = parts[0]
@@ -17,31 +21,94 @@ def interpolate(text: str, context: Dict[str, Any]) -> str:
                 elif isinstance(val, dict) and p in val:
                     val = val[p]
                 else:
-                    return match.group(0)
+                    return str(match.group(0))
             return str(val)
-        return match.group(0)
+        return str(match.group(0))
 
     return re.sub(r"\$\{([^}]+)\}", repl, text)
 
 
-# VERY naive evaluation
+def _safe_eval(expr: str, context: Dict[str, Any]) -> Any:
+    """Evaluate a python expression safely using AST parsing."""
+    _mapping: Dict[Any, Any] = {
+        ast.Add: operator.add,
+        ast.Sub: operator.sub,
+        ast.Mult: operator.mul,
+        ast.Div: operator.truediv,
+        ast.Eq: operator.eq,
+        ast.NotEq: operator.ne,
+        ast.Lt: operator.lt,
+        ast.LtE: operator.le,
+        ast.Gt: operator.gt,
+        ast.GtE: operator.ge,
+        ast.Not: operator.not_,
+    }
+
+    def _eval(node: ast.AST) -> Any:
+        if isinstance(node, ast.Expression):
+            return _eval(node.body)
+        elif isinstance(node, ast.Constant):
+            return node.value
+        elif isinstance(node, ast.Name):
+            if node.id in context:
+                return context[node.id]
+            # fallback string identifier if not found
+            return node.id
+        elif isinstance(node, ast.BinOp):
+            return _mapping[type(node.op)](_eval(node.left), _eval(node.right))
+        elif isinstance(node, ast.Compare):
+            left = _eval(node.left)
+            for op, comp in zip(node.ops, node.comparators, strict=True):
+                if not _mapping[type(op)](left, _eval(comp)):
+                    return False
+                left = _eval(comp)
+            return True
+        elif isinstance(node, ast.BoolOp):
+            if isinstance(node.op, ast.And):
+                return all(_eval(v) for v in node.values)
+            else:
+                return any(_eval(v) for v in node.values)
+        elif isinstance(node, ast.UnaryOp):
+            return _mapping[type(node.op)](_eval(node.operand))
+        elif isinstance(node, ast.Attribute):
+            val = _eval(node.value)
+            if hasattr(val, node.attr):
+                return getattr(val, node.attr)
+            return None
+        else:
+            raise ValueError(f"Unsupported syntax in expression: {type(node).__name__}")
+
+    try:
+        expr = expr.strip()
+        if not expr:
+            return ""
+        tree = ast.parse(expr, mode="eval")
+        return _eval(tree)
+    except Exception:
+        # If it fails to parse as AST (e.g. invalid syntax), return the original string
+        return expr
+
+
 def evaluate_condition(cond: str, context: Dict[str, Any]) -> bool:
-    # try full python eval
+    """Evaluate a conditional string and return its boolean value."""
     cond_eval = interpolate(cond, context).strip()
     try:
-        return bool(eval(cond_eval, {"__builtins__": None}, context))
+        return bool(_safe_eval(cond_eval, context))
     except Exception as e:
         raise ValueError(f"Error evaluating condition '{cond}': {e}") from e
 
 
 class MacroEvaluator:
+    """Evaluates the macro Abstract Syntax Tree contextually during runtime."""
+
     def __init__(
         self,
         macro: Macro,
         args: List[str],
         exec_cb: Callable[[str], Any],
         roll_cb: Callable[[str], Any],
-    ):
+    ) -> None:
+        """Initialize parameters and evaluation callbacks."""
         self.macro = macro
         self.args = args
         self.exec_cb = exec_cb
@@ -50,10 +117,11 @@ class MacroEvaluator:
         self.outputs: List[str] = []
         self._bind_args()
 
-    def _bind_args(self):
+    def _bind_args(self) -> None:
+        """Parse arguments passed by the user against the macro's parameters."""
         for i, param in enumerate(self.macro.params):
             if i < len(self.args):
-                val = self.args[i]
+                val: Any = self.args[i]
             elif param.default is not None:
                 val = param.default
             else:
@@ -76,9 +144,11 @@ class MacroEvaluator:
             self.context[param.name] = val
 
     def run(self) -> Any:
+        """Begin evaluating the core macro block."""
         return self._execute_block(0, len(self.macro.body))
 
     def _execute_block(self, start: int, end: int) -> Any:
+        """Execute a subset frame of the macro body lines."""
         i = start
         while i < end:
             line = self.macro.body[i].strip()
@@ -142,8 +212,8 @@ class MacroEvaluator:
             i += 1
         return None
 
-    def _find_next_block(self, start: int, end: int):
-        # find the next elseif, else, or endif and the global endif
+    def _find_next_block(self, start: int, end: int) -> Tuple[int, str, str, int]:
+        """Skip through lines finding the extents and conditions for branches."""
         depth = 0
         block_end = end
         next_type = "endif"
@@ -185,6 +255,7 @@ class MacroEvaluator:
         return block_end, next_type, next_cond, end_if_idx
 
     def _execute_line(self, line: str) -> Any:
+        """Parse individual lines for evaluation against operations and bindings."""
         # assignments: var_name = func(...)
         # or just func(...)
         assign_match = re.match(r"^([a-zA-Z0-9_]+)\s*=\s*(.+)$", line)
@@ -201,6 +272,7 @@ class MacroEvaluator:
         return None
 
     def _eval_expr(self, expr: str) -> Any:
+        """Parse interpolation variables and execute explicit builtin calls."""
         expr = interpolate(expr, self.context)
 
         # handle echo("...")
@@ -234,8 +306,8 @@ class MacroEvaluator:
                 content = content[1:-1]
             return self.roll_cb(content)
 
-        # fallback eval or just return the text
+        # fallback safe eval or just return the text
         try:
-            return eval(expr, {"__builtins__": None}, self.context)
+            return _safe_eval(expr, self.context)
         except Exception:
             return expr
