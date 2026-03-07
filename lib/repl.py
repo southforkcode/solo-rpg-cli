@@ -157,7 +157,13 @@ class REPLEnvironment:
                 cmd = RollCommand()
                 return cmd.execute(sub_lexer, self.state)
 
-            evaluator = MacroEvaluator(macro, args, cb_exec, cb_roll)
+            evaluator = MacroEvaluator(
+                macro, 
+                args, 
+                cb_exec, 
+                cb_roll, 
+                global_vars=self.state.variable_manager.get_all()
+            )
             try:
                 ret = evaluator.run()
             except Exception as e:
