@@ -1,7 +1,6 @@
 import time
 import traceback
 from pathlib import Path
-from typing import Any
 
 from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
@@ -12,6 +11,79 @@ from lib.infrastructure.history import History
 from lib.presentation.command import Command, CommandRegistry
 from lib.presentation.lexer import Lexer
 from lib.presentation.pretty import PrettyPrinterRegistry
+
+
+class _HelpCommand(Command):
+    """Command to display help information for other commands or list all commands."""
+
+    def __init__(self, repl):
+        super().__init__()
+        self.command = "help"
+        self.aliases = ["h"]
+        self.description = "Show help for a command"
+        self.repl = repl
+
+    def execute(self, lexer: Lexer, state: State) -> object:
+        """Execute the help command, showing general help or specific command help."""
+        command_name = lexer.next()
+        if command_name is None:
+            self.repl.command_registry.help()
+            return None
+        command = self.repl.command_registry.lookup_command(command_name)
+        if command is None:
+            print(f"Command '{command_name}' not found")
+            self.repl.command_registry.help()
+            return None
+        command.help()
+        return None
+
+    def help(self) -> None:
+        """Print the help documentation for the help command itself."""
+        print("help [command] - Show help for a command")
+
+
+class _ExitCommand(Command):
+    """Command to cleanly exit the REPL environment."""
+
+    def __init__(self, repl):
+        super().__init__()
+        self.command = "exit"
+        self.aliases = ["quit", "bye"]
+        self.description = "Exit the REPL"
+        self.repl = repl
+
+    def execute(self, lexer: Lexer, state: State) -> object:
+        """Execute the exit command, signaling the REPL to terminate."""
+        self.repl._quit_requested = True
+        return None
+
+    def help(self) -> None:
+        """Print the help documentation for the exit command."""
+        print("exit|quit|bye - Exit the REPL")
+
+
+class _LastCommand(Command):
+    """Command to retrieve the result of the previously executed command."""
+
+    def __init__(self, repl):
+        super().__init__()
+        self.command = "last"
+        self.aliases = ["_"]
+        self.description = "Get the result of the last command"
+        self.repl = repl
+
+    def execute(self, lexer: Lexer, state: State) -> object:
+        """Execute the last command, fetching results from command history."""
+        offset_str = lexer.next()
+        if offset_str is None:
+            return self.repl.history.get_all()
+        else:
+            offset = int(offset_str)
+            return self.repl.history.get(offset)
+
+    def help(self) -> None:
+        """Print the help documentation for the last command."""
+        print("last [offset] - Get the result of the last command")
 
 
 class REPLEnvironment:
@@ -28,35 +100,11 @@ class REPLEnvironment:
 
     def run(self):
         # register help command and aliases
-        self.command_registry.register(
-            Command.from_impl(
-                "help",
-                ["h"],
-                "Show help for a command",
-                self.help_command,
-                self.help_help,
-            )
-        )
+        self.command_registry.register(_HelpCommand(self))
         # register exit command and aliases
-        self.command_registry.register(
-            Command.from_impl(
-                "exit",
-                ["quit", "bye"],
-                "Exit the REPL",
-                self.exit_command,
-                self.exit_help,
-            )
-        )
+        self.command_registry.register(_ExitCommand(self))
         # register last command and aliases
-        self.command_registry.register(
-            Command.from_impl(
-                "last",
-                ["_"],
-                "Get the result of the last command",
-                self.last_command,
-                self.last_help,
-            )
-        )
+        self.command_registry.register(_LastCommand(self))
 
 
         while True:
@@ -103,7 +151,7 @@ class REPLEnvironment:
             return line.rstrip("\n")
         return self.session.prompt("> ")
 
-    def execute(self, lexer: Lexer) -> Any:
+    def execute(self, lexer: Lexer) -> object:
         cmd = lexer.next()
         if cmd is None:
             return None
@@ -145,11 +193,11 @@ class REPLEnvironment:
                 args.append(arg)
 
             # setup callbacks
-            def cb_exec(text: str) -> Any:
+            def cb_exec(text: str) -> object:
                 sub_lexer = Lexer(text)
                 return self.execute(sub_lexer)
 
-            def cb_roll(text: str) -> Any:
+            def cb_roll(text: str) -> object:
                 sub_lexer = Lexer(text)
                 from lib.presentation.commands.roll_command import RollCommand
 
@@ -201,41 +249,5 @@ class REPLEnvironment:
             return None
         return result
 
-    def print(self, result: Any) -> None:
+    def print(self, result: object) -> None:
         self.pretty_printer_registry.print(result)
-
-    def exit_command(self, lexer: Lexer, state: State) -> Any:
-        self._quit_requested = True
-        return None
-
-    def exit_help(self):
-        print("exit|quit|bye - Exit the REPL")
-
-    def help_command(self, lexer: Lexer, state: State) -> Any:
-        command_name = lexer.next()
-        if command_name is None:
-            self.command_registry.help()
-            return None
-        command = self.command_registry.lookup_command(command_name)
-        if command is None:
-            print(f"Command '{command_name}' not found")
-            self.command_registry.help()
-            return None
-        command.help()
-        return None
-
-    def help_help(self):
-        print("help [command] - Show help for a command")
-
-    def last_command(self, lexer: Lexer, state: State) -> Any:
-        # was an offset provided
-        offset_str = lexer.next()
-        if offset_str is None:
-            # return all last results
-            return self.history.get_all()
-        else:
-            offset = int(offset_str)
-            return self.history.get(offset)
-
-    def last_help(self):
-        print("last [offset] - Get the result of the last command")

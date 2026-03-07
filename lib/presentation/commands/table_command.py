@@ -16,7 +16,7 @@ class TableCommand(Command):
         self.aliases = ["tables"]
         self.description = "Roll on random tables or list them"
 
-    def execute(self, lexer: Lexer, state: State) -> Any:
+    def execute(self, lexer: Lexer, state: State) -> object:
         """Execute the table command with the given argument state."""
         subcommand = lexer.next()
 
@@ -33,7 +33,7 @@ class TableCommand(Command):
                 "Usage: table [list|roll <name>]"
             )
 
-    def do_list(self, state: State) -> Any:
+    def do_list(self, state: State) -> object:
         """List all available tables."""
         manager = getattr(state, "table_manager", None)
         if not manager:
@@ -51,7 +51,7 @@ class TableCommand(Command):
 
         return None
 
-    def do_roll(self, table_name: str, state: State) -> Any:
+    def do_roll(self, table_name: str, state: State) -> object:
         """Roll on a given table and journal the result."""
         manager = getattr(state, "table_manager", None)
         if not manager:

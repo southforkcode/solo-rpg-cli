@@ -3,45 +3,22 @@ import inspect
 import os
 import sys
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Callable, Optional
 
 from lib.core.state import State
 from lib.presentation.lexer import Lexer
 
 
 class Command:
-    @classmethod
-    def from_impl(
-        cls,
-        command: str,
-        aliases: list[str],
-        description: str,
-        exec_impl: Callable[[Lexer, State], Any],
-        help_impl: Callable[[], None],
-    ):
-        command_obj = cls()
-        command_obj.command = command
-        command_obj.aliases = aliases
-        command_obj.description = description
-        command_obj.exec_impl = exec_impl
-        command_obj.help_impl = help_impl
-        return command_obj
-
     def __init__(self):
         self.command = ""
         self.aliases = []
         self.description = ""
-        self.exec_impl: Callable[[Lexer, State], Any] = None
-        self.help_impl: Callable[[], None] = None
 
-    def execute(self, lexer: Lexer, state: State) -> Any:
-        if self.exec_impl is not None:
-            return self.exec_impl(lexer, state)
+    def execute(self, lexer: Lexer, state: State) -> object:
         raise NotImplementedError
 
     def help(self) -> None:
-        if self.help_impl is not None:
-            self.help_impl()
         raise NotImplementedError
 
 

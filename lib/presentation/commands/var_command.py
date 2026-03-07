@@ -14,7 +14,7 @@ class VarCommand(Command):
         self.aliases = ["variables", "v"]
         self.description = "Manage game variables"
 
-    def execute(self, lexer: Lexer, state: State) -> Any:
+    def execute(self, lexer: Lexer, state: State) -> object:
         subcmd = lexer.next()
         if not subcmd:
             self.help()
@@ -35,7 +35,7 @@ class VarCommand(Command):
             self.help()
             return None
 
-    def _execute_set(self, lexer: Lexer, state: State) -> Any:
+    def _execute_set(self, lexer: Lexer, state: State) -> object:
         """Create or update a variable with a parsed numeric or string value."""
         name = lexer.next()
         if not name:
@@ -53,7 +53,7 @@ class VarCommand(Command):
             return "Usage: var set <name> <value>"
 
         # Try to parse as int or float
-        parsed_value: Any = value_str
+        parsed_value: object = value_str
         try:
             parsed_value = int(value_str)
         except ValueError:
@@ -65,7 +65,7 @@ class VarCommand(Command):
         state.variable_manager.set_var(name, parsed_value)
         return f"Variable '{name}' set to {parsed_value}."
 
-    def _execute_update(self, lexer: Lexer, state: State) -> Any:
+    def _execute_update(self, lexer: Lexer, state: State) -> object:
         """Modify an existing numeric variable by a specified increment or decrement."""
         name = lexer.next()
         if not name:
@@ -97,7 +97,7 @@ class VarCommand(Command):
         state.variable_manager.set_var(name, new_val)
         return f"Variable '{name}' updated to {new_val}."
 
-    def _execute_get(self, lexer: Lexer, state: State) -> Any:
+    def _execute_get(self, lexer: Lexer, state: State) -> object:
         """Retrieve and format a specific variable's current value."""
         name = lexer.next()
         if not name:
@@ -110,7 +110,7 @@ class VarCommand(Command):
         # Don't return None because repl might not print it
         return f"{name}: {val}"
 
-    def _execute_list(self, state: State) -> Any:
+    def _execute_list(self, state: State) -> object:
         """List all currently tracked globally persisted game variables."""
         vars_dict = state.variable_manager.get_all()
         if not vars_dict:
@@ -121,7 +121,7 @@ class VarCommand(Command):
             lines.append(f"  {k}: {v}")
         return "\n".join(lines)
 
-    def _execute_delete(self, lexer: Lexer, state: State) -> Any:
+    def _execute_delete(self, lexer: Lexer, state: State) -> object:
         """Delete a given variable from the campaign state."""
         name = lexer.next()
         if not name:

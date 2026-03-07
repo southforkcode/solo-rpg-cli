@@ -15,7 +15,7 @@ class MacroCommand(Command):
         self.aliases = ["macros"]
         self.description = "Manage macros"
 
-    def execute(self, lexer: Lexer, state: State) -> Any:
+    def execute(self, lexer: Lexer, state: State) -> object:
         """Execute the macro command with the given argument state."""
         subcommand = lexer.next()
         if subcommand is None or subcommand == "list":
@@ -27,7 +27,7 @@ class MacroCommand(Command):
                 f"Unknown macro subcommand: {subcommand}\nUsage: macro [list|reload]"
             )
 
-    def do_list(self, state: State) -> Any:
+    def do_list(self, state: State) -> object:
         """List all available macros."""
         manager = getattr(state, "macro_manager", None)
         if not manager:
@@ -52,7 +52,7 @@ class MacroCommand(Command):
 
         return None
 
-    def do_reload(self, state: State) -> Any:
+    def do_reload(self, state: State) -> object:
         """Reload the macro definitions from disk."""
         manager = getattr(state, "macro_manager", None)
         if not manager:

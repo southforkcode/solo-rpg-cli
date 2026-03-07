@@ -33,7 +33,7 @@ class OracleCommand(Command):
             'Syntax: oracle ["Question"] [--odds <likelihood>]'
         )
 
-    def execute(self, lexer: Lexer, state: State) -> Any:
+    def execute(self, lexer: Lexer, state: State) -> object:
         """
         Executes the oracle command.
 

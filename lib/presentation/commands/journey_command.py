@@ -25,7 +25,7 @@ class JourneyCommand(Command):
         self.aliases = []
         self.description = "Manage journeys"
 
-    def execute(self, lexer: Lexer, state: State) -> Any:
+    def execute(self, lexer: Lexer, state: State) -> object:
         """Execute the journey command by routing to the appropriate subcommand."""
         subcommand = lexer.next()
 
@@ -64,7 +64,7 @@ class JourneyCommand(Command):
             title_parts.append(part)
         return " ".join(title_parts).strip("\"'")
 
-    def start_subcommand(self, lexer: Lexer, state: State) -> Any:
+    def start_subcommand(self, lexer: Lexer, state: State) -> object:
         """Start a new journey interactively."""
         title = self._get_title(lexer)
         if not title:
@@ -118,7 +118,7 @@ class JourneyCommand(Command):
 
         return f'Journey "{title}" started.'
 
-    def list_subcommand(self, lexer: Lexer, state: State) -> Any:
+    def list_subcommand(self, lexer: Lexer, state: State) -> object:
         """List active, paused, completed, or all journeys."""
         flag = lexer.next()
         if not flag:
@@ -144,7 +144,7 @@ class JourneyCommand(Command):
         """Retrieve a journey by title or ID from the manager."""
         return state.journey_manager.get_journey(identifier)
 
-    def progress_subcommand(self, lexer: Lexer, state: State) -> Any:
+    def progress_subcommand(self, lexer: Lexer, state: State) -> object:
         """Progress a journey toward completion."""
         identifier = self._get_title(lexer)
         if not identifier:
@@ -193,7 +193,7 @@ class JourneyCommand(Command):
 
     def state_subcommand(
         self, lexer: Lexer, state: State, new_state: str, action_str: str
-    ) -> Any:
+    ) -> object:
         """Transition a journey to a semantic new state (pause, complete, etc.)."""
         identifier = self._get_title(lexer)
         if not identifier:
@@ -224,7 +224,7 @@ class JourneyCommand(Command):
 
         return None
 
-    def remove_subcommand(self, lexer: Lexer, state: State) -> Any:
+    def remove_subcommand(self, lexer: Lexer, state: State) -> object:
         """Permanently remove a journey."""
         identifier = self._get_title(lexer)
         if not identifier:

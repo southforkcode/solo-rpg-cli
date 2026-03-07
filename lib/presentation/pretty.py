@@ -11,10 +11,10 @@ class PrettyPrinter:
     def __init__(self):
         self.console = Console()
 
-    def can_print(self, obj: Any) -> bool:
+    def can_print(self, obj: object) -> bool:
         raise NotImplementedError
 
-    def print(self, obj: Any) -> None:
+    def print(self, obj: object) -> None:
         raise NotImplementedError
 
 
@@ -22,7 +22,7 @@ class PrettyPrinterRegistry:
     def __init__(self):
         self.printers = {}
 
-    def register(self, obj: Any) -> None:
+    def register(self, obj: object) -> None:
         self.printers[type(obj)] = obj
 
     def register_directory(self, directory: Path) -> None:
@@ -40,7 +40,7 @@ class PrettyPrinterRegistry:
                 if issubclass(obj, PrettyPrinter) and obj != PrettyPrinter:
                     self.register(obj())
 
-    def print(self, obj: Any) -> None:
+    def print(self, obj: object) -> None:
         for printer in self.printers.values():
             if printer.can_print(obj):
                 printer.print(obj)
