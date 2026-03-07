@@ -10,7 +10,7 @@ class State:
         self.base_dir = base_dir
         self.journal_manager = JournalManager(base_dir)
         self.journey_manager = JourneyManager(base_dir)
-        self.state = {}
+        self.state: dict[str, Any] = {}
         self.dirty = False
 
     def get(self, key: str) -> Any:

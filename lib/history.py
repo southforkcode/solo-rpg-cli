@@ -4,7 +4,7 @@ from typing import Any
 
 
 class HistoryItem:
-    def __init__(self, command: str, result: Any, timestamp: float = None):
+    def __init__(self, command: str, result: Any, timestamp: float | None = None):
         self.command = command
         self.result = result
         self.timestamp = timestamp or datetime.now().timestamp()
@@ -15,7 +15,7 @@ class HistoryItem:
 
 class History:
     def __init__(self, maxlen: int = 10):
-        self.history = deque(maxlen=maxlen)
+        self.history: deque[HistoryItem] = deque(maxlen=maxlen)
 
     def add(self, command: str, result: Any) -> None:
         self.history.append(HistoryItem(command, result))

@@ -1,12 +1,12 @@
 from datetime import datetime
-from typing import List
+from typing import Any, List
 
 from lib.journal import JournalEntry
 from lib.pretty import PrettyPrinter
 
 
 class JournalPrinter(PrettyPrinter):
-    def can_print(self, obj: any) -> bool:
+    def can_print(self, obj: Any) -> bool:
         return isinstance(obj, list) and all(isinstance(x, JournalEntry) for x in obj)
 
     def print(self, obj: List[JournalEntry]) -> None:
