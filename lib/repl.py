@@ -25,7 +25,6 @@ class REPLEnvironment:
         self.history = History()
         self.command_registry = CommandRegistry()
         self.pretty_printer_registry = PrettyPrinterRegistry()
-        self.macro_manager = MacroManager(gamedir)
         self._quit_requested = False
         self._save_result = True
 
@@ -102,10 +101,9 @@ class REPLEnvironment:
                 last_result = self.history.get(0)
                 if last_result is not None:
                     # we need to add to journal. We can just invoke Journal.add
-                    from lib.journal import JournalEntry, JournalManager
+                    from lib.journal import JournalEntry
 
-                    j_mgr = JournalManager(self.gamedir)
-                    j_mgr.add_entry(
+                    self.state.journal_manager.add_entry(
                         JournalEntry(
                             title="Last Result",
                             content=str(last_result),
@@ -117,7 +115,7 @@ class REPLEnvironment:
                     print("No previous valid result to journal.")
                 return None
 
-            macro = self.macro_manager.get_macro(macro_name)
+            macro = self.state.macro_manager.get_macro(macro_name)
             if macro is None:
                 print(f"Macro '{macro_name}' not found.")
                 return None
@@ -151,15 +149,14 @@ class REPLEnvironment:
                 return None
 
             if is_journal:
-                from lib.journal import JournalEntry, JournalManager
+                from lib.journal import JournalEntry
 
-                j_mgr = JournalManager(self.gamedir)
                 # join outputs or use return value
                 final_output = (
                     str(ret) if ret is not None else "\n".join(evaluator.outputs)
                 )
                 if final_output:
-                    j_mgr.add_entry(
+                    self.state.journal_manager.add_entry(
                         JournalEntry(
                             title=f"Macro {macro_name}",
                             content=final_output,

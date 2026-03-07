@@ -10,6 +10,19 @@
 - Use `behave` for feature testing
 - Use `ruff` for linting
 - Use `mypy` for type checking
+- Always make changes in a feature or bug branch. Do not make changes in main branch.
+- For bugs, make sure it's reproducible in a test. Fix the bug. Make sure the test succeeds.
+- When creating new test cases for bugs, reference the issue id in the test case name. Add comment to test case with link to issue.
+- For features, create a new branch. Add one or more test cases for the feature. Make sure the test succeeds.
+
+## Issue Analysis
+
+- When analyzing issues, make sure you understand the issue completely. 
+- If you don't understand the issue, ask for clarification.
+- If you need more information, ask for clarification.
+- If you need more information, ask for clarification.
+- Do not fix the issue until you have a plan and have it approved. The plan should be on an issue ticket. Create an issue ticket if you don't have on.
+
 
 ## Testing
 
