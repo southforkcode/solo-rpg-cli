@@ -23,7 +23,7 @@ class History:
     def get(self, offset: int) -> HistoryItem:
         if offset >= len(self.history):
             raise IndexError("Offset out of bounds")
-        return self.history[offset]
+        return self.history[-(offset + 1)]
 
     def get_all(self) -> list[HistoryItem]:
         return list(self.history)
