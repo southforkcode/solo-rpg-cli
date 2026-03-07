@@ -47,6 +47,12 @@ class TestMacroEvaluator(unittest.TestCase):
         self.assertFalse(_safe_eval("a > b", context))
         self.assertTrue(_safe_eval("a == 5 and b == 10", context))
 
+    def test_safe_eval_undefined_variable(self):
+        context = {"a": 5}
+        with self.assertRaises(ValueError) as err:
+            _safe_eval("a + missing_variable", context)
+        self.assertIn("Undefined variable 'missing_variable'", str(err.exception))
+
     def test_macro_evaluation(self):
         macro = Macro(
             "test_macro",

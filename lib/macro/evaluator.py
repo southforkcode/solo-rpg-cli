@@ -52,8 +52,7 @@ def _safe_eval(expr: str, context: Dict[str, Any]) -> Any:
         elif isinstance(node, ast.Name):
             if node.id in context:
                 return context[node.id]
-            # fallback string identifier if not found
-            return node.id
+            raise ValueError(f"Undefined variable '{node.id}'")
         elif isinstance(node, ast.BinOp):
             return _mapping[type(node.op)](_eval(node.left), _eval(node.right))
         elif isinstance(node, ast.Compare):
@@ -83,10 +82,11 @@ def _safe_eval(expr: str, context: Dict[str, Any]) -> Any:
         if not expr:
             return ""
         tree = ast.parse(expr, mode="eval")
-        return _eval(tree)
-    except Exception:
-        # If it fails to parse as AST (e.g. invalid syntax), return the original string
+    except SyntaxError:
+        # If AST parse fails (e.g. invalid syntax like '3d6'), return string
         return expr
+
+    return _eval(tree)
 
 
 def evaluate_condition(cond: str, context: Dict[str, Any]) -> bool:
@@ -309,5 +309,10 @@ class MacroEvaluator:
         # fallback safe eval or just return the text
         try:
             return _safe_eval(expr, self.context)
+        except ValueError as e:
+            # Re-raise explicit ValueError from missing variables or unsupported ops
+            if "Undefined variable" in str(e) or "Unsupported syntax" in str(e):
+                raise
+            return expr
         except Exception:
             return expr
