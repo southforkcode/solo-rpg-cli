@@ -28,7 +28,7 @@ class PrettyPrinterRegistry:
     def register_directory(self, directory: Path) -> None:
         for filename in directory.glob("*.py"):
             # load module and find all Command instances
-            module_name = "pretty_printers." + Path(filename).stem
+            module_name = "lib.pretty_printers." + Path(filename).stem
             spec = importlib.util.spec_from_file_location(module_name, filename)
             if spec is None or spec.loader is None:
                 continue

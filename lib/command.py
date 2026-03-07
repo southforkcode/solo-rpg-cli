@@ -62,8 +62,7 @@ class CommandRegistry:
     def register_directory(self, directory: Path) -> None:
         for filename in os.listdir(directory):
             if filename.endswith(".py"):
-                # load module and find all Command instances
-                module_name = "commands." + Path(filename).stem
+                module_name = "lib.commands." + Path(filename).stem
                 spec = importlib.util.spec_from_file_location(
                     module_name, directory / filename
                 )
