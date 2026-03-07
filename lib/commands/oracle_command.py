@@ -8,6 +8,13 @@ from lib.state import State
 
 
 class OracleCommand(Command):
+    """
+    A command to simulate a virtual GM answering yes/no questions.
+    
+    This command allows users to ask a question and specify the odds of a 'Yes' 
+    answer using predefined labels (e.g., likely, unlikely, certain). It can 
+    also read custom probabilities from an 'oracle.json' file.
+    """
     DEFAULT_ODDS = {
         "certain": 90,
         "likely": 75,
@@ -23,6 +30,20 @@ class OracleCommand(Command):
         self.description = 'Ask the oracle a question. Syntax: oracle ["Question"] [--odds <likelihood>]'
 
     def execute(self, lexer: Lexer, state: State) -> Any:
+        """
+        Executes the oracle command.
+
+        Args:
+            lexer (Lexer): The lexer containing the command arguments.
+            state (State): The current game state, used to resolve base paths.
+
+        Returns:
+            str: The formatted oracle answer ("Oracle: Yes" or "Oracle: No"),
+                 optionally including the asked question.
+                 
+        Raises:
+            SyntaxError: If the --odds flag is provided without a value.
+        """
         question = ""
         odds_key = "50/50"
 
