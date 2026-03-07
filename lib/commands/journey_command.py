@@ -10,7 +10,8 @@ from lib.lexer import Lexer
 from lib.state import State
 
 
-def prompt(*args, **kwargs):
+def prompt(*args: Any, **kwargs: Any) -> str:
+    """Wrapper around prompt_toolkit.prompt for easy mocking in tests."""
     return prompt_toolkit.prompt(*args, **kwargs)
 
 
@@ -18,12 +19,14 @@ class JourneyCommand(Command):
     """The command for managing journeys."""
 
     def __init__(self):
+        """Initialize the JourneyCommand."""
         super().__init__()
         self.command = "journey"
         self.aliases = []
         self.description = "Manage journeys"
 
     def execute(self, lexer: Lexer, state: State) -> Any:
+        """Execute the journey command by routing to the appropriate subcommand."""
         subcommand = lexer.next()
 
         if not subcommand:
@@ -41,7 +44,9 @@ class JourneyCommand(Command):
         elif subcommand == "resume":
             return self.state_subcommand(lexer, state, "active", "now active.")
         elif subcommand == "complete":
-            return self.state_subcommand(lexer, state, "completed", "was completed!")
+            return self.state_subcommand(
+                lexer, state, "completed", "was completed!"
+            )
         elif subcommand == "stop":
             return self.state_subcommand(
                 lexer, state, "stopped", "stopped indefinitely."
@@ -52,6 +57,7 @@ class JourneyCommand(Command):
             return f"Error: Unknown journey subcommand '{subcommand}'"
 
     def _get_title(self, lexer: Lexer) -> str:
+        """Parse a multi-word or quoted title from the Lexer."""
         title_parts = []
         while True:
             part = lexer.next()
@@ -61,6 +67,7 @@ class JourneyCommand(Command):
         return " ".join(title_parts).strip("\"'")
 
     def start_subcommand(self, lexer: Lexer, state: State) -> Any:
+        """Start a new journey interactively."""
         title = self._get_title(lexer)
         if not title:
             return "Error: Please provide a journey title."
@@ -96,7 +103,9 @@ class JourneyCommand(Command):
             except ValueError:
                 return "Error: Steps must be an integer."
 
-        state.journey_manager.add_journey(title, description, difficulty, steps)
+        state.journey_manager.add_journey(
+            title, description, difficulty, steps
+        )
 
         content = description
         if not content:
@@ -107,13 +116,14 @@ class JourneyCommand(Command):
         entry = JournalEntry(
             title=f"Started Journey: {title}",
             content=content,
-            timestamp=datetime.now().timestamp(),
+            timestamp=datetime.now().timestamp()
         )
         state.journal_manager.add_entry(entry)
 
         return f'Journey "{title}" started.'
 
     def list_subcommand(self, lexer: Lexer, state: State) -> Any:
+        """List active, paused, completed, or all journeys."""
         flag = lexer.next()
         if not flag:
             flag = "-active"
@@ -135,9 +145,11 @@ class JourneyCommand(Command):
         return state.journey_manager.list_journeys(state_filter)
 
     def _get_journey(self, identifier: str, state: State) -> Journey:
+        """Retrieve a journey by title or ID from the manager."""
         return state.journey_manager.get_journey(identifier)
 
     def progress_subcommand(self, lexer: Lexer, state: State) -> Any:
+        """Progress a journey toward completion."""
         identifier = self._get_title(lexer)
         if not identifier:
             return "Error: Please provide a journey identifier."
@@ -147,7 +159,7 @@ class JourneyCommand(Command):
             return f'Error: Journey "{identifier}" not found.'
 
         if journey.state != "active":
-            return f"Error: Journey is not active ({journey.state})."
+            return f'Error: Journey is not active ({journey.state}).'
 
         old_progress = journey.progress
         step_str = "infinity" if journey.steps is None else str(journey.steps)
@@ -157,7 +169,7 @@ class JourneyCommand(Command):
 
         print(
             f'Journey "{journey.title}" ({journey.state}) progressed '
-            f"from {old_progress}/{step_str} to {journey.progress}/{step_str}."
+            f'from {old_progress}/{step_str} to {journey.progress}/{step_str}.'
         )
 
         try:
@@ -177,7 +189,9 @@ class JourneyCommand(Command):
             entry_title += " (Completed)"
 
         entry = JournalEntry(
-            title=entry_title, content=comment, timestamp=datetime.now().timestamp()
+            title=entry_title,
+            content=comment,
+            timestamp=datetime.now().timestamp()
         )
         state.journal_manager.add_entry(entry)
 
@@ -186,6 +200,7 @@ class JourneyCommand(Command):
     def state_subcommand(
         self, lexer: Lexer, state: State, new_state: str, action_str: str
     ) -> Any:
+        """Transition a journey to a semantic new state (pause, complete, etc.)."""
         identifier = self._get_title(lexer)
         if not identifier:
             return "Error: Please provide a journey identifier."
@@ -204,18 +219,22 @@ class JourneyCommand(Command):
 
         step_str = "infinity" if journey.steps is None else str(journey.steps)
 
-        print(f'Journey "{journey.title}" ({journey.progress}/{step_str}) {action_str}')
+        print(
+            f'Journey "{journey.title}" ({journey.progress}/{step_str}) '
+            f'{action_str}'
+        )
 
         entry = JournalEntry(
             title=f"Journey {new_state.capitalize()}: {journey.title}",
             content=comment,
-            timestamp=datetime.now().timestamp(),
+            timestamp=datetime.now().timestamp()
         )
         state.journal_manager.add_entry(entry)
 
         return None
 
     def remove_subcommand(self, lexer: Lexer, state: State) -> Any:
+        """Permanently remove a journey."""
         identifier = self._get_title(lexer)
         if not identifier:
             return "Error: Please provide a journey identifier."
@@ -229,18 +248,19 @@ class JourneyCommand(Command):
         try:
             ans = prompt(
                 f'Remove journey "{journey.title}" '
-                f"({journey.progress}/{step_str}) Y/N? "
+                f'({journey.progress}/{step_str}) Y/N? '
             )
         except (EOFError, KeyboardInterrupt):
             return "Cancelled."
 
-        if ans.lower() == "y":
+        if ans.lower() == 'y':
             state.journey_manager.remove_journey(str(journey.id))
             return f'Journey "{journey.title}" removed.'
 
         return "Cancelled."
 
     def help(self):
+        """Print help information for the journey command."""
         print("journey start <title> - Start a new journey")
         print("journey list [-active|-paused|-completed|-all] - List journeys")
         print("journey progress <identifier> - Progress a journey")

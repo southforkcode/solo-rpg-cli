@@ -121,11 +121,11 @@ class JourneyManager:
             return True
         return False
 
-    def update_journey(self, journey: Journey):
+    def update_journey(self, journey: Journey) -> bool:
         """Update an existing journey and save."""
-        # Find index and replace, or just save since object is mutated
         for i, j in enumerate(self._journeys):
             if j.id == journey.id:
                 self._journeys[i] = journey
                 self._save()
-                return
+                return True
+        return False
