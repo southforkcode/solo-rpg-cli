@@ -7,7 +7,7 @@ class Lexer:
     def __init__(self, text):
         self.lexer = shlex(text, posix=True)
         self.lexer.commenters = ""
-        self.lexer.wordchars += "-"
+        self.lexer.wordchars += "-/"
         self.tokens = deque(self.lexer)
         self.spent_tokens = deque()
 

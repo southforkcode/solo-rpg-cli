@@ -1,3 +1,4 @@
+import time
 import traceback
 from pathlib import Path
 from typing import Any
@@ -8,6 +9,7 @@ from prompt_toolkit.history import FileHistory
 from lib.command import Command, CommandRegistry
 from lib.history import History
 from lib.lexer import Lexer
+from lib.macro import MacroEvaluator, MacroManager
 from lib.pretty import PrettyPrinterRegistry
 from lib.state import State
 
@@ -23,6 +25,7 @@ class REPLEnvironment:
         self.history = History()
         self.command_registry = CommandRegistry()
         self.pretty_printer_registry = PrettyPrinterRegistry()
+        self.macro_manager = MacroManager(gamedir)
         self._quit_requested = False
         self._save_result = True
 
@@ -89,6 +92,84 @@ class REPLEnvironment:
         cmd = lexer.next()
         if cmd is None:
             return None
+
+        if cmd.startswith("//") or cmd.startswith("/"):
+            is_journal = cmd.startswith("//")
+            macro_name = cmd[2:] if is_journal else cmd[1:]
+
+            if not macro_name and is_journal:
+                # user typed just "//", means journal the last command
+                last_result = self.history.get(0)
+                if last_result is not None:
+                    # we need to add to journal. We can just invoke Journal.add
+                    from lib.journal import JournalEntry, JournalManager
+
+                    j_mgr = JournalManager(self.gamedir)
+                    j_mgr.add_entry(
+                        JournalEntry(
+                            title="Last Result",
+                            content=str(last_result),
+                            timestamp=time.time(),
+                        )
+                    )
+                    print("Added last result to journal.")
+                else:
+                    print("No previous valid result to journal.")
+                return None
+
+            macro = self.macro_manager.get_macro(macro_name)
+            if macro is None:
+                print(f"Macro '{macro_name}' not found.")
+                return None
+
+            # extract args
+            args = []
+            while True:
+                arg = lexer.next()
+                if arg is None:
+                    break
+                args.append(arg)
+
+            # setup callbacks
+            def cb_exec(text: str) -> Any:
+                sub_lexer = Lexer(text)
+                return self.execute(sub_lexer)
+
+            def cb_roll(text: str) -> Any:
+                sub_lexer = Lexer(text)
+                from lib.commands.roll_command import RollCommand
+
+                # fake state execution
+                cmd = RollCommand()
+                return cmd.execute(sub_lexer, self.state)
+
+            evaluator = MacroEvaluator(macro, args, cb_exec, cb_roll)
+            try:
+                ret = evaluator.run()
+            except Exception as e:
+                print(f"Macro execution failed: {e}")
+                return None
+
+            if is_journal:
+                from lib.journal import JournalEntry, JournalManager
+
+                j_mgr = JournalManager(self.gamedir)
+                # join outputs or use return value
+                final_output = (
+                    str(ret) if ret is not None else "\n".join(evaluator.outputs)
+                )
+                if final_output:
+                    j_mgr.add_entry(
+                        JournalEntry(
+                            title=f"Macro {macro_name}",
+                            content=final_output,
+                            timestamp=time.time(),
+                        )
+                    )
+                    print("Added macro output to journal.")
+
+            return ret
+
         command = self.command_registry.lookup_command(cmd)
         if command is None:
             print(f"Command '{cmd}' not found")

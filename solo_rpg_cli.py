@@ -18,8 +18,7 @@ if __name__ == "__main__":
     if args.init:
         if gamedir_path.exists():
             print(
-                f"Error: Directory '{args.gamedir}' already exists. "
-                f"Cannot initialize."
+                f"Error: Directory '{args.gamedir}' already exists. Cannot initialize."
             )
             sys.exit(1)
         else:

@@ -27,7 +27,7 @@ def step_impl_run_cli_with_init(context):
     cmd = [sys.executable, "solo_rpg_cli.py", "--init", context.gamedir_path]
     # We pipe stdin so the repl doesn't block if it gets to that point,
     # though with --init it shouldn't block, it just initializes or errors out.
-    # Wait, --init ALSO starts the REPL! 
+    # Wait, --init ALSO starts the REPL!
     # Let's send "exit\n" to stdin so it exits immediately after starting the repl.
     process = subprocess.run(cmd, input="exit\n", text=True, capture_output=True)
     context.returncode = process.returncode
@@ -60,9 +60,7 @@ def step_impl_exit_code(context, code):
 
 @then("the directory should be created")
 def step_impl_dir_created(context):
-    assert context.gamedir.exists(), (
-        f"Directory {context.gamedir_path} was not created"
-    )
+    assert context.gamedir.exists(), f"Directory {context.gamedir_path} was not created"
 
 
 @then("the CLI should successfully start and exit")
