@@ -28,8 +28,8 @@ class JournalEntry:
 
 
 class JournalManager:
-    def __init__(self, gamedir: Path):
-        self.journal_file = gamedir / "journal.txt"
+    def __init__(self, base_dir: Path):
+        self.journal_file = base_dir / "journal.txt"
         self._entries: List[JournalEntry] = []
         self._load()
 
