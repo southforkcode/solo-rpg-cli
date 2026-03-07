@@ -1,7 +1,8 @@
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from .models import Macro, MacroParam
+from .grammar import parse_macros
+from .models import Macro
 
 
 class MacroManager:
@@ -31,44 +32,15 @@ class MacroManager:
     def _parse_file(self, filepath: Path, is_global: bool) -> None:
         """Parse a macros.txt file and append definitions to the cache."""
         with open(filepath, "r") as f:
-            lines = f.readlines()
+            text = f.read()
 
-        current_macro: Optional[Macro] = None
-
-        for line in lines:
-            stripped = line.strip()
-            if not stripped or stripped.startswith(";"):
-                # keep empty lines or comments inside macro body if we want
-                if current_macro is not None:
-                    current_macro.body.append(line)
-                continue
-
-            if stripped.startswith("defmacro "):
-                parts = stripped.split()
-                name = parts[1]
-                params = []
-                for p in parts[2:]:
-                    # parse param:type=default
-                    default = None
-                    if "=" in p:
-                        p, default = p.split("=", 1)
-                    type_hint = "str"
-                    if ":" in p:
-                        p_name, type_hint = p.split(":", 1)
-                    else:
-                        p_name = p
-                    params.append(
-                        MacroParam(name=p_name, type_hint=type_hint, default=default)
-                    )
-                current_macro = Macro(
-                    name=name, params=params, body=[], is_global=is_global
-                )
-            elif stripped == "endmacro":
-                if current_macro:
-                    self.macros[current_macro.name] = current_macro
-                    current_macro = None
-            elif current_macro is not None:
-                current_macro.body.append(line)
+        try:
+            parsed_macros = parse_macros(text)
+            for current_macro in parsed_macros:
+                current_macro.is_global = is_global
+                self.macros[current_macro.name] = current_macro
+        except Exception as e:
+            print(f"Error parsing macro file {filepath}: {e}")
 
     def get_macro(self, name: str) -> Optional[Macro]:
         """Fetch a macro by its designated name."""
