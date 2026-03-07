@@ -1,17 +1,18 @@
-import json
 from dataclasses import dataclass
-from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
 
 @dataclass
 class JournalEntry:
+    """A single journal entry containing a title, content, and a timestamp."""
+
     title: str
     content: str
     timestamp: float
 
     def to_dict(self) -> dict:
+        """Convert the entry to a dictionary."""
         return {
             "title": self.title,
             "content": self.content,
@@ -20,6 +21,7 @@ class JournalEntry:
 
     @classmethod
     def from_dict(cls, data: dict) -> "JournalEntry":
+        """Create a JournalEntry from a dictionary representing its fields."""
         return cls(
             title=data["title"],
             content=data["content"],
@@ -28,12 +30,16 @@ class JournalEntry:
 
 
 class JournalManager:
+    """Manages a collection of journal entries persisted to a file."""
+
     def __init__(self, base_dir: Path):
+        """Initialize the JournalManager with a base directory."""
         self.journal_file = base_dir / "journal.txt"
         self._entries: List[JournalEntry] = []
         self._load()
 
     def _load(self):
+        """Load entries from the journal file into memory."""
         if self.journal_file.exists():
             with open(self.journal_file, "r") as f:
                 content = f.read()
@@ -57,6 +63,7 @@ class JournalManager:
                         )
 
     def _save(self):
+        """Save entries from memory into the journal file."""
         with open(self.journal_file, "w") as f:
             for i, entry in enumerate(self._entries):
                 f.write(f"{entry.title}\n{entry.timestamp}\n{entry.content}")
@@ -64,15 +71,18 @@ class JournalManager:
                     f.write("\n\n---\n\n")
 
     def add_entry(self, entry: JournalEntry):
+        """Add a new entry to the journal and save it."""
         self._entries.append(entry)
         self._save()
 
     def get_entries(self, top: Optional[int] = None) -> List[JournalEntry]:
+        """Get a list of journal entries, limited to top N if specified."""
         if top is None:
             return self._entries.copy()
         return self._entries[-top:]
 
     def delete_entry(self, identifier: str) -> bool:
+        """Delete a journal entry by its 1-based index or its exact title."""
         # Check if identifier is an index (1-based)
         try:
             index = int(identifier)

@@ -14,13 +14,17 @@ def prompt(*args, **kwargs):
 
 
 class JournalCommand(Command):
+    """The command for managing journal entries through adding, listing, or deleting."""
+
     def __init__(self):
+        """Initialize the JournalCommand."""
         super().__init__()
         self.command = "journal"
         self.aliases = ["j"]
         self.description = "Manage journal entries"
 
     def execute(self, lexer: Lexer, state: State) -> Any:
+        """Execute the journal command by routing to the appropriate subcommand."""
         subcommand = lexer.next()
 
         if not subcommand:
@@ -36,6 +40,7 @@ class JournalCommand(Command):
             return f"Error: Unknown journal subcommand '{subcommand}'"
 
     def add_subcommand(self, lexer: Lexer, state: State) -> Any:
+        """Handle the 'add' subcommand to write a new journal entry."""
         title_parts = []
         while True:
             part = lexer.next()
@@ -49,7 +54,8 @@ class JournalCommand(Command):
             title = f"Note at {datetime.now().strftime('%c')}"
 
         print(
-            "Adding journal entry... (Type '...' on a new line or press Ctrl-D to save, Ctrl-C to cancel)"
+            "Adding journal entry... (Type '...' on a new line or "
+            "press Ctrl-D to save, Ctrl-C to cancel)"
         )
         content_lines = []
         try:
@@ -71,6 +77,7 @@ class JournalCommand(Command):
         return "Journal entry added."
 
     def list_subcommand(self, lexer: Lexer, state: State) -> Any:
+        """Handle the 'list' subcommand to output recent entries."""
         top_str = lexer.next()
         top = None
         if top_str:
@@ -82,6 +89,7 @@ class JournalCommand(Command):
         return state.journal_manager.get_entries(top)
 
     def delete_subcommand(self, lexer: Lexer, state: State) -> Any:
+        """Handle the 'delete' subcommand to remove an entry."""
         identifier_parts = []
         while True:
             part = lexer.next()
@@ -99,8 +107,10 @@ class JournalCommand(Command):
             return f"Error: Journal entry '{identifier}' not found."
 
     def help(self):
+        """Print exactly how to use the journal command."""
         print("journal|j add [title] - adds a journal entry with optional title")
         print("journal|j list [top] - lists journal entries optionally up to the last")
         print(
-            "journal|j delete|del <identifier> - deletes journal entry by identifier (index or title)"
+            "journal|j delete|del <identifier> - "
+            "deletes journal entry by identifier (index or title)"
         )

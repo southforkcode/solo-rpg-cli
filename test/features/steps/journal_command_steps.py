@@ -1,4 +1,3 @@
-import shutil
 import tempfile
 from pathlib import Path
 
@@ -6,7 +5,7 @@ from behave import given, then, when
 
 import lib.commands.journal_command as journal_command_module
 from lib.commands.journal_command import JournalCommand
-from lib.journal import JournalEntry, JournalManager
+from lib.journal import JournalEntry
 from lib.lexer import Lexer
 from lib.state import State
 
@@ -35,8 +34,9 @@ def step_impl_new_session(context):
 
 @given('a journal entry with title "{title}" and content "{content}"')
 def step_impl_add_journal_entry(context, title, content):
-    manager = JournalManager(context.gamedir)
-    manager.add_entry(JournalEntry(title=title, content=content, timestamp=12345.0))
+    context.state.journal_manager.add_entry(
+        JournalEntry(title=title, content=content, timestamp=12345.0)
+    )
 
 
 @when('I type the command "{command}"')
@@ -87,15 +87,13 @@ def step_impl_command_output(context, expected):
 @then("the journal should have {count:d} entry")
 @then("the journal should have {count:d} entries")
 def step_impl_journal_count(context, count):
-    manager = JournalManager(context.gamedir)
-    entries = manager.get_entries()
+    entries = context.state.journal_manager.get_entries()
     assert len(entries) == count, f"Expected {count} entries, got {len(entries)}"
 
 
 @then('the first journal entry should have title "{title}"')
 def step_impl_journal_title(context, title):
-    manager = JournalManager(context.gamedir)
-    entries = manager.get_entries()
+    entries = context.state.journal_manager.get_entries()
     assert entries[0].title == title, (
         f"Expected title '{title}', got '{entries[0].title}'"
     )
@@ -103,8 +101,7 @@ def step_impl_journal_title(context, title):
 
 @then('the first journal entry title should start with "{prefix}"')
 def step_impl_journal_title_prefix(context, prefix):
-    manager = JournalManager(context.gamedir)
-    entries = manager.get_entries()
+    entries = context.state.journal_manager.get_entries()
     assert entries[0].title.startswith(prefix), (
         f"Expected title to start with '{prefix}', got '{entries[0].title}'"
     )
@@ -112,8 +109,7 @@ def step_impl_journal_title_prefix(context, prefix):
 
 @then('the first journal entry should contain "{content}"')
 def step_impl_journal_content(context, content):
-    manager = JournalManager(context.gamedir)
-    entries = manager.get_entries()
+    entries = context.state.journal_manager.get_entries()
     assert content in entries[0].content, (
         f"Expected content to contain '{content}', got '{entries[0].content}'"
     )
@@ -132,4 +128,4 @@ def step_impl_output_contain(context, content):
             f"Expected output to contain '{content}', got '{context.result}'"
         )
     else:
-        assert False, f"Unexpected result type: {type(context.result)}"
+        raise AssertionError(f"Unexpected result type: {type(context.result)}")
