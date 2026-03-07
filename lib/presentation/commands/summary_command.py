@@ -23,7 +23,7 @@ class SummaryCommand(Command):
         self.aliases = ["s"]
         self.description = "Summarize the current state of the game"
 
-    def execute(self, lexer: Lexer, state: State) -> Any:
+    def execute(self, lexer: Lexer, state: State) -> object:
         # We don't have subcommands, but we should consume remaining tokens
         # if any, or just ignore.
         _ = lexer.next()  # optional subcommand or garbage

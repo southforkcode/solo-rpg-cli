@@ -13,7 +13,7 @@ class RollCommand(Command):
         self.aliases = ["r"]
         self.description = "Roll dice"
 
-    def execute(self, lexer: Lexer, state: State) -> Any:
+    def execute(self, lexer: Lexer, state: State) -> object:
         dice = lexer.next()
         if dice is None:
             raise SyntaxError("roll <dice> [adv|dis] [modifier] - Roll dice")

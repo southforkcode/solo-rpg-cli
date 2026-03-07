@@ -13,17 +13,9 @@ def step_impl_new_session(context):
     context.gamedir = Path(context.temp_dir)
     context.repl = REPLEnvironment(gamedir=context.gamedir)
     context.repl.command_registry.register_directory(Path("lib/presentation/commands"))
-    from lib.presentation.command import Command
+    from lib.presentation.repl import _LastCommand
 
-    context.repl.command_registry.register(
-        Command.from_impl(
-            "last",
-            ["_"],
-            "Get the result of the last command",
-            context.repl.last_command,
-            context.repl.last_help,
-        )
-    )
+    context.repl.command_registry.register(_LastCommand(context.repl))
     context.repl.pretty_printer_registry.register_directory(Path("lib/presentation/pretty_printers"))
     context.output = ""
 

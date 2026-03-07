@@ -23,7 +23,7 @@ class JournalCommand(Command):
         self.aliases = ["j"]
         self.description = "Manage journal entries"
 
-    def execute(self, lexer: Lexer, state: State) -> Any:
+    def execute(self, lexer: Lexer, state: State) -> object:
         """Execute the journal command by routing to the appropriate subcommand."""
         subcommand = lexer.next()
 

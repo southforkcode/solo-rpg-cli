@@ -13,11 +13,12 @@ from lib.presentation.pretty import PrettyPrinter
 class SummaryPrinter(PrettyPrinter):
     """Pretty printer for a GameSummary."""
 
-    def can_print(self, obj: Any) -> bool:
+    def can_print(self, obj: object) -> bool:
         """Return True if the object is a GameSummary instance."""
         return isinstance(obj, GameSummary)
 
-    def print(self, obj: GameSummary) -> None:
+    def print(self, obj: object) -> None:
+        assert isinstance(obj, GameSummary)
         """Print the summary to stdout using rich."""
         console = Console()
 
