@@ -27,7 +27,10 @@ class VariableManager:
             json.dump(self._variables, f, indent=4)
 
     def set_var(self, name: str, value: Any) -> None:
-        """Add or update a variable and save it. Values are typically int, float, or str."""
+        """Add or update a variable and save it.
+
+        Values are typically int, float, or str.
+        """
         self._variables[name] = value
         self._save()
 

@@ -7,7 +7,7 @@ from lib.lexer import Lexer
 from lib.state import State
 
 
-@when('I execute the oracle command with \'{args}\'')
+@when("I execute the oracle command with '{args}'")
 def step_impl_execute_oracle_single_quotes(context, args):
     lexer = Lexer(args)
     state = State(base_dir=Path("/tmp/dummy"))
@@ -22,7 +22,7 @@ def step_impl_execute_oracle_single_quotes(context, args):
 
 @when('I execute the oracle command with "{args}"')
 def step_impl_execute_oracle(context, args):
-    # Depending on how the string is parsed in Behave, 
+    # Depending on how the string is parsed in Behave,
     # the steps parser might strip outer quotes from the step definition string.
     lexer = Lexer(args)
     state = State(base_dir=Path("/tmp/dummy"))
@@ -35,7 +35,7 @@ def step_impl_execute_oracle(context, args):
         context.error = e
 
 
-@when('I execute the oracle command without arguments')
+@when("I execute the oracle command without arguments")
 def step_impl_execute_oracle_no_args(context):
     lexer = Lexer("")
     state = State(base_dir=Path("/tmp/dummy"))
@@ -56,12 +56,16 @@ def step_impl_returns_result_oracle(context):
 
 @then('the oracle result starts with "{prefix}"')
 def step_impl_starts_with(context, prefix):
-    assert context.result.startswith(prefix), f"Expected result to start with '{prefix}', got '{context.result}'"
+    assert context.result.startswith(prefix), (
+        f"Expected result to start with '{prefix}', got '{context.result}'"
+    )
 
 
 @then('the oracle result contains the question "{question}"')
 def step_impl_contains_question(context, question):
-    assert question in context.result, f"Expected result to contain '{question}', got '{context.result}'"
+    assert question in context.result, (
+        f"Expected result to contain '{question}', got '{context.result}'"
+    )
 
 
 @then("the oracle command raises a SyntaxError")
