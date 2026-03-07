@@ -24,6 +24,12 @@
 - Write feature tests for all new requirements
 - Use docstrings for all new code
 - Use type hints for all new code
+- Create a branch for each new feature
+- Create a branch for each new bug fix
+- Create a branch for each new refactor
+- Do not commit to main branch only to feature/bug branch
+- Do not automerge branches - wait to be instructed
+
 
 ## Documentation
 
