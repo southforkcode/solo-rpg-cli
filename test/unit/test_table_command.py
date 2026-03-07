@@ -4,9 +4,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from lib.commands.table_command import TableCommand
-from lib.lexer import Lexer
-from lib.state import State
+from lib.core.state import State
+from lib.presentation.commands.table_command import TableCommand
+from lib.presentation.lexer import Lexer
 
 
 class TestTableCommand(unittest.TestCase):

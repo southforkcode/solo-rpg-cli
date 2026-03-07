@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from typing import Any, List
 
-from lib.command import Command
-from lib.journal import JournalEntry
-from lib.journey import Journey
-from lib.lexer import Lexer
-from lib.state import State
+from lib.core.journal import JournalEntry
+from lib.core.journey import Journey
+from lib.core.state import State
+from lib.presentation.command import Command
+from lib.presentation.lexer import Lexer
 
 
 @dataclass

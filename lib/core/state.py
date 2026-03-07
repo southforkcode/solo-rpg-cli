@@ -1,11 +1,11 @@
 from pathlib import Path
 from typing import Any
 
-from lib.journal import JournalManager
-from lib.journey import JourneyManager
-from lib.macro import MacroManager
-from lib.table import TableManager
-from lib.variable import VariableManager
+from lib.core.journal import JournalManager
+from lib.core.journey import JourneyManager
+from lib.core.macro import MacroManager
+from lib.core.table import TableManager
+from lib.core.variable import VariableManager
 
 
 class State:

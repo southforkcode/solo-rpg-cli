@@ -6,8 +6,8 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 
-from lib.commands.summary_command import GameSummary
-from lib.pretty import PrettyPrinter
+from lib.presentation.commands.summary_command import GameSummary
+from lib.presentation.pretty import PrettyPrinter
 
 
 class SummaryPrinter(PrettyPrinter):

@@ -1,9 +1,9 @@
 import time
 from typing import Any
 
-from lib.command import Command
-from lib.lexer import Lexer
-from lib.state import State
+from lib.core.state import State
+from lib.presentation.command import Command
+from lib.presentation.lexer import Lexer
 
 
 class TableCommand(Command):
@@ -66,7 +66,7 @@ class TableCommand(Command):
         print(f"Result: {result}")
 
         # Add to journal
-        from lib.journal import JournalEntry
+        from lib.core.journal import JournalEntry
 
         entry = JournalEntry(
             title=f"Rolled on table '{table_name}'",

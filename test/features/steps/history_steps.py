@@ -3,8 +3,8 @@ from pathlib import Path
 
 from behave import given, then, when
 
-from lib.lexer import Lexer
-from lib.repl import REPLEnvironment
+from lib.presentation.lexer import Lexer
+from lib.presentation.repl import REPLEnvironment
 
 
 @given("a new repl session")
@@ -12,8 +12,8 @@ def step_impl_new_session(context):
     context.temp_dir = tempfile.mkdtemp()
     context.gamedir = Path(context.temp_dir)
     context.repl = REPLEnvironment(gamedir=context.gamedir)
-    context.repl.command_registry.register_directory(Path("lib/commands"))
-    from lib.command import Command
+    context.repl.command_registry.register_directory(Path("lib/presentation/commands"))
+    from lib.presentation.command import Command
 
     context.repl.command_registry.register(
         Command.from_impl(
@@ -24,7 +24,7 @@ def step_impl_new_session(context):
             context.repl.last_help,
         )
     )
-    context.repl.pretty_printer_registry.register_directory(Path("lib/pretty_printers"))
+    context.repl.pretty_printer_registry.register_directory(Path("lib/presentation/pretty_printers"))
     context.output = ""
 
 

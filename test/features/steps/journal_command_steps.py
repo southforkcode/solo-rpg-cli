@@ -3,11 +3,11 @@ from pathlib import Path
 
 from behave import given, then, when
 
-import lib.commands.journal_command as journal_command_module
-from lib.commands.journal_command import JournalCommand
-from lib.journal import JournalEntry
-from lib.lexer import Lexer
-from lib.state import State
+import lib.presentation.commands.journal_command as journal_command_module
+from lib.core.journal import JournalEntry
+from lib.core.state import State
+from lib.presentation.commands.journal_command import JournalCommand
+from lib.presentation.lexer import Lexer
 
 
 @given("a new standard session")

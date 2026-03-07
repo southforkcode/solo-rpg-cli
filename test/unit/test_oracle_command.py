@@ -4,9 +4,9 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
-from lib.commands.oracle_command import OracleCommand
-from lib.lexer import Lexer
-from lib.state import State
+from lib.core.state import State
+from lib.presentation.commands.oracle_command import OracleCommand
+from lib.presentation.lexer import Lexer
 
 
 class TestOracleCommand(unittest.TestCase):
@@ -18,7 +18,7 @@ class TestOracleCommand(unittest.TestCase):
     def tearDown(self):
         self.temp_dir.cleanup()
 
-    @patch("lib.commands.oracle_command.random.randint")
+    @patch("lib.presentation.commands.oracle_command.random.randint")
     def test_basic_question_yes(self, mock_randint):
         mock_randint.return_value = 1
         lexer = Lexer('"Is it raining?"')
@@ -26,14 +26,14 @@ class TestOracleCommand(unittest.TestCase):
         self.assertEqual(result, "Oracle: Yes (Question: Is it raining?)")
         mock_randint.assert_called_once_with(1, 100)
 
-    @patch("lib.commands.oracle_command.random.randint")
+    @patch("lib.presentation.commands.oracle_command.random.randint")
     def test_basic_question_no(self, mock_randint):
         mock_randint.return_value = 51  # 50/50 default
         lexer = Lexer('"Is it raining?"')
         result = self.command.execute(lexer, self.state)
         self.assertEqual(result, "Oracle: No (Question: Is it raining?)")
 
-    @patch("lib.commands.oracle_command.random.randint")
+    @patch("lib.presentation.commands.oracle_command.random.randint")
     def test_custom_odds(self, mock_randint):
         mock_randint.return_value = 75
         lexer = Lexer('"Is it raining?" --odds likely')
@@ -50,7 +50,7 @@ class TestOracleCommand(unittest.TestCase):
         with self.assertRaises(SyntaxError):
             self.command.execute(lexer, self.state)
 
-    @patch("lib.commands.oracle_command.random.randint")
+    @patch("lib.presentation.commands.oracle_command.random.randint")
     def test_unquoted_question(self, mock_randint):
         mock_randint.return_value = 1
         lexer = Lexer("Is the chest locked?")
@@ -64,7 +64,7 @@ class TestOracleCommand(unittest.TestCase):
         self.assertIn("certain: 90%", result)
         self.assertIn("impossible: 10%", result)
 
-    @patch("lib.commands.oracle_command.random.randint")
+    @patch("lib.presentation.commands.oracle_command.random.randint")
     def test_config_override(self, mock_randint):
         # Create a mock oracle.json
         config_path = self.state.base_dir / "oracle.json"
@@ -76,7 +76,7 @@ class TestOracleCommand(unittest.TestCase):
         result = self.command.execute(lexer, self.state)
         self.assertEqual(result, "Oracle: Yes")
 
-    @patch("lib.commands.oracle_command.random.randint")
+    @patch("lib.presentation.commands.oracle_command.random.randint")
     def test_config_fallback_unknown(self, mock_randint):
         mock_randint.return_value = 50
         lexer = Lexer("--odds not_real")

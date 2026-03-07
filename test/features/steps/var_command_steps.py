@@ -3,8 +3,8 @@ from pathlib import Path
 
 from behave import given, then, when
 
-from lib.commands.var_command import VarCommand
-from lib.repl import REPLEnvironment
+from lib.presentation.commands.var_command import VarCommand
+from lib.presentation.repl import REPLEnvironment
 
 
 @given("the game is initialized")
@@ -25,7 +25,7 @@ def step_impl_type_command(context, command):
     import sys
     from io import StringIO
 
-    from lib.lexer import Lexer
+    from lib.presentation.lexer import Lexer
 
     lexer = Lexer(command)
 

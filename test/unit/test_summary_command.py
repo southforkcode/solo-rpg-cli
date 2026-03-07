@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import MagicMock
 
-from lib.commands.summary_command import GameSummary, SummaryCommand
-from lib.lexer import Lexer
-from lib.state import State
+from lib.core.state import State
+from lib.presentation.commands.summary_command import GameSummary, SummaryCommand
+from lib.presentation.lexer import Lexer
 
 
 class TestSummaryCommand(unittest.TestCase):

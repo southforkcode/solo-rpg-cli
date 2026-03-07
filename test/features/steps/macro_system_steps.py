@@ -5,8 +5,8 @@ from pathlib import Path
 
 from behave import given, then, when
 
-from lib.lexer import Lexer
-from lib.repl import REPLEnvironment
+from lib.presentation.lexer import Lexer
+from lib.presentation.repl import REPLEnvironment
 
 
 @given("a new macro testing session")

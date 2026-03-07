@@ -3,10 +3,10 @@ from pathlib import Path
 
 from behave import given, then, when
 
-import lib.commands.journey_command as journey_command_module
-from lib.commands.journey_command import JourneyCommand
-from lib.lexer import Lexer
-from lib.state import State
+import lib.presentation.commands.journey_command as journey_command_module
+from lib.core.state import State
+from lib.presentation.commands.journey_command import JourneyCommand
+from lib.presentation.lexer import Lexer
 
 
 @given("a new journey session")

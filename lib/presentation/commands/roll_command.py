@@ -1,9 +1,9 @@
 from typing import Any
 
-from lib.command import Command
-from lib.dice_roller import DiceRerollType, DiceRoller
-from lib.lexer import Lexer
-from lib.state import State
+from lib.core.dice_roller import DiceRerollType, DiceRoller
+from lib.core.state import State
+from lib.presentation.command import Command
+from lib.presentation.lexer import Lexer
 
 
 class RollCommand(Command):
