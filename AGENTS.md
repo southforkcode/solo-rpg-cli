@@ -9,6 +9,7 @@
 - Use `uv` for package management
 - Use `behave` for feature testing
 - Use `ruff` for linting
+- Use `mypy` for type checking
 
 ## Testing
 
