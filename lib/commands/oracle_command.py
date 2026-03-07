@@ -1,0 +1,90 @@
+import json
+import random
+from typing import Any
+
+from lib.command import Command
+from lib.lexer import Lexer
+from lib.state import State
+
+
+class OracleCommand(Command):
+    DEFAULT_ODDS = {
+        "certain": 90,
+        "likely": 75,
+        "50/50": 50,
+        "unlikely": 25,
+        "impossible": 10,
+    }
+
+    def __init__(self):
+        super().__init__()
+        self.command = "oracle"
+        self.aliases = ["o"]
+        self.description = 'Ask the oracle a question. Syntax: oracle ["Question"] [--odds <likelihood>]'
+
+    def execute(self, lexer: Lexer, state: State) -> Any:
+        question = ""
+        odds_key = "50/50"
+
+        # Parse arguments
+        while True:
+            token = lexer.next()
+            if token is None:
+                break
+            
+            if token == "--odds":
+                next_token = lexer.next()
+                if next_token is None:
+                    raise SyntaxError("oracle [\"Question\"] [--odds <likelihood>] - expected likelihood after --odds")
+                odds_key = next_token
+            else:
+                # If it's not a flag, treat it as part of the question. 
+                # If there are multiple tokens not tied to flags, join them intelligently.
+                if question:
+                    if len(token) == 1 and token in "?!.":
+                        question += token
+                    else:
+                        question += " " + token
+                else:
+                    question = token
+
+        # Load probability table
+        odds_table = self.DEFAULT_ODDS.copy()
+        config_path = state.base_dir / "oracle.json"
+        if config_path.exists():
+            try:
+                with open(config_path, "r") as f:
+                    custom_odds = json.load(f)
+                    if isinstance(custom_odds, dict):
+                        odds_table.update(custom_odds)
+            except Exception as e:
+                print(f"Warning: Failed to load oracle.json: {e}")
+
+        # Ensure chosen odds_key exists
+        if odds_key not in odds_table:
+            print(f"Warning: Unknown odds '{odds_key}'. Falling back to '50/50'.")
+            print(f"Available odds: {', '.join(odds_table.keys())}")
+            odds_key = "50/50"
+
+        target_number = odds_table[odds_key]
+        
+        # Roll 1d100
+        roll = random.randint(1, 100)
+        answer = "Yes" if roll <= target_number else "No"
+
+        # Format output
+        output = f"Oracle: {answer}"
+        if question:
+            output = f"Oracle: {answer} (Question: {question})"
+        
+        return output
+
+    def help(self) -> None:
+        print('oracle ["Question"] [--odds <likelihood>] - Ask the oracle a yes/no question')
+        print("  [\"Question\"] - Optional question to ask")
+        print("  [--odds <likelihood>] - Optional probability of a Yes answer.")
+        print("                          Defaults to 50/50. Common options: certain, likely, 50/50, unlikely, impossible.")
+        print("Examples:")
+        print('    oracle "Are there guards?" --odds likely')
+        print('    oracle "Is the chest locked?"')
+        print('    o --odds certain')
