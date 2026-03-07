@@ -9,7 +9,7 @@ from prompt_toolkit.history import FileHistory
 from lib.command import Command, CommandRegistry
 from lib.history import History
 from lib.lexer import Lexer
-from lib.macro import MacroEvaluator, MacroManager
+from lib.macro import MacroEvaluator
 from lib.pretty import PrettyPrinterRegistry
 from lib.state import State
 
@@ -94,7 +94,9 @@ class REPLEnvironment:
 
     def read(self):
         import sys
-        # Note: In Pytest/Behave environments stdout and stdin are often mocks and not true TTYs.
+
+        # Note: In Pytest/Behave environments stdout and stdin are often mocks
+        # and not true TTYs.
         if not sys.stdin.isatty() or not sys.stdout.isatty():
             print("> ", end="", flush=True)
             line = sys.stdin.readline()
@@ -158,11 +160,11 @@ class REPLEnvironment:
                 return cmd.execute(sub_lexer, self.state)
 
             evaluator = MacroEvaluator(
-                macro, 
-                args, 
-                cb_exec, 
-                cb_roll, 
-                global_vars=self.state.variable_manager.get_all()
+                macro,
+                args,
+                cb_exec,
+                cb_roll,
+                global_vars=self.state.variable_manager.get_all(),
             )
             try:
                 ret = evaluator.run()

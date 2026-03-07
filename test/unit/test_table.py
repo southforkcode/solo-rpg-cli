@@ -23,7 +23,7 @@ class TestTable(unittest.TestCase):
         self.assertEqual(len(table.items), 3)
         self.assertIn("Alice", table.items)
         self.assertIn("Charlie", table.items)
-        
+
         # Test roll
         result = table.roll()
         self.assertIn(result, ["Alice", "Bob", "Charlie"])
@@ -36,14 +36,14 @@ class TestTable(unittest.TestCase):
         self.assertEqual(len(table.items), 3)
         self.assertEqual(table.items[0], "Gold")
         self.assertEqual(table.items[2], "Sword")
-        
+
         result = table.roll()
         self.assertIn(result, ["Gold", "Potion", "Sword"])
 
     def test_table_empty(self):
         empty_file = self.tables_dir / "empty.txt"
         empty_file.write_text("", encoding="utf-8")
-        
+
         table = Table("empty", empty_file)
         self.assertEqual(len(table.items), 0)
         self.assertIsNone(table.roll())
@@ -81,7 +81,7 @@ class TestTableManager(unittest.TestCase):
     def test_no_tables_dir(self):
         empty_dir = tempfile.TemporaryDirectory()
         manager = TableManager(Path(empty_dir.name))
-        
+
         self.assertEqual(manager.list_tables(), [])
         self.assertIsNone(manager.roll("names"))
         empty_dir.cleanup()

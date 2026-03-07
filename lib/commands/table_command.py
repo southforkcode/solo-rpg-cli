@@ -29,7 +29,8 @@ class TableCommand(Command):
             return self.do_roll(table_name, state)
         else:
             raise SyntaxError(
-                f"Unknown table subcommand: {subcommand}\nUsage: table [list|roll <name>]"
+                f"Unknown table subcommand: {subcommand}\n"
+                "Usage: table [list|roll <name>]"
             )
 
     def do_list(self, state: State) -> Any:

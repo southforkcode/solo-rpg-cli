@@ -13,36 +13,37 @@ def step_impl_setup_tables(context):
     context.temp_dir = tempfile.mkdtemp()
     context.base_dir = Path(context.temp_dir)
     context.state = State(context.base_dir)
-    
+
     tables_dir = context.base_dir / "tables"
     tables_dir.mkdir()
-    
+
     for row in context.table:
         filename = row["filename"]
         content = row["content"].replace("\\n", "\n")
         (tables_dir / filename).write_text(content, encoding="utf-8")
-        
+
     context.state.table_manager.load_tables()
     context.command = TableCommand()
+
 
 @when('I execute table command "{command_text}"')
 def step_impl_type_command(context, command_text):
     lexer = Lexer(command_text)
-    cmd_name = lexer.next()  # should be "table"
-    
+    lexer.next()  # should be "table"
+
     # Capture print output
-    from io import StringIO
     import sys
-    
+    from io import StringIO
+
     old_stdout = sys.stdout
     sys.stdout = mystdout = StringIO()
-    
+
     context.error = None
     try:
         context.result = context.command.execute(lexer, context.state)
     except Exception as e:
         context.error = e
-        
+
     sys.stdout = old_stdout
     context.output = mystdout.getvalue()
 
@@ -62,5 +63,9 @@ def step_impl_result_in_journal(context):
 @then('a SyntaxError should be raised with "{err_msg}"')
 def step_impl_syntax_error(context, err_msg):
     assert context.error is not None, "Expected an error but none was raised."
-    assert isinstance(context.error, SyntaxError), f"Expected SyntaxError, got {type(context.error)}"
-    assert err_msg in str(context.error), f"Expected message '{err_msg}', got '{str(context.error)}'"
+    assert isinstance(context.error, SyntaxError), (
+        f"Expected SyntaxError, got {type(context.error)}"
+    )
+    assert err_msg in str(context.error), (
+        f"Expected message '{err_msg}', got '{str(context.error)}'"
+    )

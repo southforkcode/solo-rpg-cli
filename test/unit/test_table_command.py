@@ -1,7 +1,6 @@
 import io
 import sys
 import tempfile
-import time
 import unittest
 from pathlib import Path
 
@@ -16,10 +15,14 @@ class TestTableCommand(unittest.TestCase):
         self.base_dir = Path(self.temp_dir.name)
         self.tables_dir = self.base_dir / "tables"
         self.tables_dir.mkdir()
-        
+
         # Add dummy tables
-        (self.tables_dir / "heroes.txt").write_text("Arthur\nLancelot", encoding="utf-8")
-        (self.tables_dir / "loot.csv").write_text("Gold,100\nPotion,50", encoding="utf-8")
+        (self.tables_dir / "heroes.txt").write_text(
+            "Arthur\nLancelot", encoding="utf-8"
+        )
+        (self.tables_dir / "loot.csv").write_text(
+            "Gold,100\nPotion,50", encoding="utf-8"
+        )
 
         self.state = State(self.base_dir)
         self.state.table_manager.load_tables()
@@ -30,7 +33,7 @@ class TestTableCommand(unittest.TestCase):
 
     def test_list_subcommand(self):
         lexer = Lexer("list")
-        
+
         # Test output
         captured_output = io.StringIO()
         old_stdout = sys.stdout
@@ -39,7 +42,7 @@ class TestTableCommand(unittest.TestCase):
             self.command.execute(lexer, self.state)
         finally:
             sys.stdout = old_stdout
-            
+
         output = captured_output.getvalue()
         self.assertIn("Available tables:", output)
         self.assertIn("heroes", output)
@@ -47,7 +50,7 @@ class TestTableCommand(unittest.TestCase):
 
     def test_roll_subcommand(self):
         lexer = Lexer("roll heroes")
-        
+
         captured_output = io.StringIO()
         old_stdout = sys.stdout
         sys.stdout = captured_output
@@ -55,11 +58,11 @@ class TestTableCommand(unittest.TestCase):
             result = self.command.execute(lexer, self.state)
         finally:
             sys.stdout = old_stdout
-            
+
         output = captured_output.getvalue()
         self.assertIn("Result:", output)
         self.assertIn(result, ["Arthur", "Lancelot"])
-        
+
         # Check journal
         entries = self.state.journal_manager.get_entries()
         self.assertEqual(len(entries), 1)
@@ -68,7 +71,7 @@ class TestTableCommand(unittest.TestCase):
 
     def test_roll_missing_table(self):
         lexer = Lexer("roll nonexistent")
-        
+
         captured_output = io.StringIO()
         old_stdout = sys.stdout
         sys.stdout = captured_output
@@ -76,7 +79,7 @@ class TestTableCommand(unittest.TestCase):
             result = self.command.execute(lexer, self.state)
         finally:
             sys.stdout = old_stdout
-            
+
         output = captured_output.getvalue()
         self.assertIsNone(result)
         self.assertIn("not found", output)

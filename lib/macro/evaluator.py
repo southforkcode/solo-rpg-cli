@@ -1,7 +1,7 @@
 import ast
 import operator
 import re
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, List, Optional
 
 from .models import (
     Assignment,
@@ -115,7 +115,7 @@ class MacroEvaluator:
         args: List[str],
         exec_cb: Callable[[str], Any],
         roll_cb: Callable[[str], Any],
-        global_vars: Dict[str, Any] = None,
+        global_vars: Optional[Dict[str, Any]] = None,
     ) -> None:
         """Initialize parameters and evaluation callbacks."""
         self.macro = macro

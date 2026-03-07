@@ -10,11 +10,12 @@ from lib.state import State
 class OracleCommand(Command):
     """
     A command to simulate a virtual GM answering yes/no questions.
-    
-    This command allows users to ask a question and specify the odds of a 'Yes' 
-    answer using predefined labels (e.g., likely, unlikely, certain). It can 
+
+    This command allows users to ask a question and specify the odds of a 'Yes'
+    answer using predefined labels (e.g., likely, unlikely, certain). It can
     also read custom probabilities from an 'oracle.json' file.
     """
+
     DEFAULT_ODDS = {
         "certain": 90,
         "likely": 75,
@@ -27,7 +28,10 @@ class OracleCommand(Command):
         super().__init__()
         self.command = "oracle"
         self.aliases = ["o"]
-        self.description = 'Ask the oracle a question. Syntax: oracle ["Question"] [--odds <likelihood>]'
+        self.description = (
+            "Ask the oracle a question. "
+            'Syntax: oracle ["Question"] [--odds <likelihood>]'
+        )
 
     def execute(self, lexer: Lexer, state: State) -> Any:
         """
@@ -40,7 +44,7 @@ class OracleCommand(Command):
         Returns:
             str: The formatted oracle answer ("Oracle: Yes" or "Oracle: No"),
                  optionally including the asked question.
-                 
+
         Raises:
             SyntaxError: If the --odds flag is provided without a value.
         """
@@ -53,17 +57,21 @@ class OracleCommand(Command):
             token = lexer.next()
             if token is None:
                 break
-            
+
             args_provided = True
-            
+
             if token == "--odds":
                 next_token = lexer.next()
                 if next_token is None:
-                    raise SyntaxError("oracle [\"Question\"] [--odds <likelihood>] - expected likelihood after --odds")
+                    raise SyntaxError(
+                        'oracle ["Question"] [--odds <likelihood>] - '
+                        "expected likelihood after --odds"
+                    )
                 odds_key = next_token
             else:
-                # If it's not a flag, treat it as part of the question. 
-                # If there are multiple tokens not tied to flags, join them intelligently.
+                # If it's not a flag, treat it as part of the question.
+                # If there are multiple tokens not tied to flags,
+                # join them intelligently.
                 if question:
                     if len(token) == 1 and token in "?!.":
                         question += token
@@ -98,7 +106,7 @@ class OracleCommand(Command):
             odds_key = "50/50"
 
         target_number = odds_table[odds_key]
-        
+
         # Roll 1d100
         roll = random.randint(1, 100)
         answer = "Yes" if roll <= target_number else "No"
@@ -107,15 +115,21 @@ class OracleCommand(Command):
         output = f"Oracle: {answer}"
         if question:
             output = f"Oracle: {answer} (Question: {question})"
-        
+
         return output
 
     def help(self) -> None:
-        print('oracle ["Question"] [--odds <likelihood>] - Ask the oracle a yes/no question')
-        print("  [\"Question\"] - Optional question to ask")
+        print(
+            'oracle ["Question"] [--odds <likelihood>] - '
+            "Ask the oracle a yes/no question"
+        )
+        print('  ["Question"] - Optional question to ask')
         print("  [--odds <likelihood>] - Optional probability of a Yes answer.")
-        print("                          Defaults to 50/50. Common options: certain, likely, 50/50, unlikely, impossible.")
+        print(
+            "                          Defaults to 50/50. Common options: "
+            "certain, likely, 50/50, unlikely, impossible."
+        )
         print("Examples:")
         print('    oracle "Are there guards?" --odds likely')
         print('    oracle "Is the chest locked?"')
-        print('    o --odds certain')
+        print("    o --odds certain")

@@ -88,7 +88,10 @@ class VarCommand(Command):
                 return f"Invalid numeric change: '{change_str}'"
 
         if not isinstance(current_val, (int, float)):
-            return f"Cannot update non-numeric variable '{name}' (type: {type(current_val).__name__})"
+            return (
+                f"Cannot update non-numeric variable '{name}' "
+                f"(type: {type(current_val).__name__})"
+            )
 
         new_val = current_val + change_val
         state.variable_manager.set_var(name, new_val)
@@ -103,7 +106,7 @@ class VarCommand(Command):
         val = state.variable_manager.get_var(name)
         if val is None:
             return f"Variable '{name}' not found."
-        
+
         # Don't return None because repl might not print it
         return f"{name}: {val}"
 
