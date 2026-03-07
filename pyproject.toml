@@ -22,3 +22,7 @@ line-length = 88
 docstring-code-format = true
 [tool.ruff.lint]
 select = ["E", "F", "I", "B"] # Examples: PEP8, Pyflakes, isort, Bugbear
+
+[tool.mypy]
+explicit_package_bases = true
+disable_error_code = ["import-untyped"]

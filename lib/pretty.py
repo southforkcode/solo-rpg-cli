@@ -30,6 +30,8 @@ class PrettyPrinterRegistry:
             # load module and find all Command instances
             module_name = "pretty_printers." + Path(filename).stem
             spec = importlib.util.spec_from_file_location(module_name, filename)
+            if spec is None or spec.loader is None:
+                continue
             module = importlib.util.module_from_spec(spec)
             sys.modules[module_name] = module
             spec.loader.exec_module(module)

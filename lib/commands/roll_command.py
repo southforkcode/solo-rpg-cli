@@ -39,10 +39,12 @@ class RollCommand(Command):
             else:
                 modifier_str = adv_dis
         if modifier_str is not None:
-            if modifier_str == "+":
-                modifier = int(lexer.next())
-            elif modifier_str == "-":
-                modifier = -int(lexer.next())
+            if modifier_str in ("+", "-"):
+                val_str = lexer.next()
+                if val_str is None:
+                    raise SyntaxError("roll <dice> [adv|dis] [modifier] - Roll dice")
+                val = int(val_str)
+                modifier = val if modifier_str == "+" else -val
             else:
                 raise SyntaxError("roll <dice> [adv|dis] [modifier] - Roll dice")
         result = DiceRoller.roll(num_dice, num_sides, reroll_type, modifier)

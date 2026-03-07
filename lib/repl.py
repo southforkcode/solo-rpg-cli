@@ -15,7 +15,9 @@ from lib.state import State
 class REPLEnvironment:
     def __init__(self, gamedir: Path):
         self.gamedir = gamedir
-        self.session = PromptSession(FileHistory(gamedir / "history"))
+        self.session: PromptSession = PromptSession(
+            history=FileHistory(str(gamedir / "history"))
+        )
         self.state = State(base_dir=gamedir)
         self.state.set("gamedir", gamedir)
         self.history = History()

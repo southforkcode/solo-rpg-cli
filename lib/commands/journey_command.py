@@ -144,7 +144,7 @@ class JourneyCommand(Command):
 
         return state.journey_manager.list_journeys(state_filter)
 
-    def _get_journey(self, identifier: str, state: State) -> Journey:
+    def _get_journey(self, identifier: str, state: State) -> Journey | None:
         """Retrieve a journey by title or ID from the manager."""
         return state.journey_manager.get_journey(identifier)
 
