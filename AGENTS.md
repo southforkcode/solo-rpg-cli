@@ -18,6 +18,7 @@
 ## Coding Standards
 
 - Use `ruff` for linting
+- Use `mypy` for type checking
 - Use `behave` for feature testing
 - Use `uv` for package management
 - Write unit tests for all new code
