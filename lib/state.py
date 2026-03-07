@@ -4,6 +4,7 @@ from typing import Any
 from lib.journal import JournalManager
 from lib.journey import JourneyManager
 from lib.macro import MacroManager
+from lib.table import TableManager
 from lib.variable import VariableManager
 
 
@@ -13,6 +14,7 @@ class State:
         self.journal_manager = JournalManager(base_dir)
         self.journey_manager = JourneyManager(base_dir)
         self.macro_manager = MacroManager(base_dir)
+        self.table_manager = TableManager(base_dir)
         self.variable_manager = VariableManager(base_dir)
         self.state: dict[str, Any] = {}
         self.dirty = False
