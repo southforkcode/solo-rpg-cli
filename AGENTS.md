@@ -11,7 +11,11 @@
 - Use `behave` for feature testing
 - Use `ruff` for linting
 - Use `mypy` for type checking
-- Always make changes in a feature or bug branch. Do not make changes in main branch.
+- **CRITICAL WORKFLOW RULE: NEVER COMMIT DIRECTLY TO THE `main` BRANCH.**
+  1. ALL changes (documentation, code, tests, tooling) MUST be done in a separate branch (`feature/`, `bugfix/`, `docs/`, `chore/`).
+  2. You MUST create a Pull Request (PR) for your branch.
+  3. You MUST wait for explicit user review, comments, and approval on the PR before proceeding.
+  4. You MUST NOT merge the PR yourself unless explicitly instructed by the user after approval.
 - For bugs, make sure it's reproducible in a test. Fix the bug. Make sure the test succeeds.
 - When creating new test cases for bugs, reference the issue id in the test case name. Add comment to test case with link to issue.
 - For features, create a new branch. Add one or more test cases for the feature. Make sure the test succeeds.
@@ -43,8 +47,8 @@
 - Create a branch for each new feature
 - Create a branch for each new bug fix
 - Create a branch for each new refactor
-- Do not commit to main branch only to feature/bug branch
-- Do not automerge branches - wait to be instructed
+- **Do not commit to the main branch.** Every change must go through a feature, bug, docs, or chore branch.
+- Do not automerge branches - wait to be instructed after a Pull Request review.
 
 ## Code Review
 
