@@ -10,7 +10,7 @@ from rich.console import Console as RichConsole
 class Console(Protocol):
     """Protocol defining the interface for I/O operations in the REPL."""
 
-    def read(self) -> str:
+    def read(self, prompt_str: str = "> ") -> str:
         """Read a line of input from the user."""
         ...
 
@@ -26,8 +26,9 @@ class Console(Protocol):
 class DefaultConsole:
     """Default implementation of Console using prompt_toolkit and rich."""
 
-    def __init__(self, gamedir: Path):
+    def __init__(self, gamedir: Path, completer=None):
         self.gamedir = gamedir
+        self.completer = completer
         self._session: PromptSession | None = None
         self._rich_console = RichConsole()
 
@@ -35,18 +36,19 @@ class DefaultConsole:
     def session(self) -> PromptSession:
         if self._session is None:
             self._session = PromptSession(
-                history=FileHistory(str(self.gamedir / "history"))
+                history=FileHistory(str(self.gamedir / "history")),
+                completer=self.completer
             )
         return self._session
 
-    def read(self) -> str:
+    def read(self, prompt_str: str = "> ") -> str:
         if not sys.stdin.isatty() or not sys.stdout.isatty():
-            print("> ", end="", flush=True)
+            print(prompt_str, end="", flush=True)
             line = sys.stdin.readline()
             if not line:
                 raise EOFError()
             return line.rstrip("\n")
-        return self.session.prompt("> ")
+        return self.session.prompt(prompt_str)
 
     def print(self, text: str | object) -> None:
         # If it's a string, we print it directly.
@@ -74,7 +76,7 @@ class MockConsole:
         self.inputs = inputs
         self.outputs: list[str | object] = []
 
-    def read(self) -> str:
+    def read(self, prompt_str: str = "> ") -> str:
         if not self.inputs:
             raise EOFError()
         return self.inputs.pop(0)

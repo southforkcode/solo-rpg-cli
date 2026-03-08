@@ -24,6 +24,27 @@ class JournalCommand(Command):
         self.aliases = ["j"]
         self.description = "Manage journal entries"
 
+    def get_completions(self, text_before_cursor: str, state: State) -> list[str]:
+        """Return a list of autocomplete suggestions."""
+        words = text_before_cursor.split()
+        if not words:
+            return []
+        
+        is_new_word = text_before_cursor.endswith(' ')
+        verbs = ["add", "list", "delete", "del"]
+        
+        if len(words) == 1 and not is_new_word:
+            return []
+            
+        if len(words) == 1 and is_new_word:
+            return verbs
+            
+        if len(words) == 2 and not is_new_word:
+            prefix = words[1].lower()
+            return [v for v in verbs if v.startswith(prefix)]
+            
+        return []
+
     def execute(self, lexer: Lexer, state: State) -> object:
         """Execute the journal command by routing to the appropriate subcommand."""
         subcommand = lexer.next()
