@@ -1,0 +1,103 @@
+Male: Rhys, Rees; Female: Angharad, Ancarat
+Male: Gruffudd, Gruffydd; Female: Gwenllian, Gwenllyan
+Male: Llywelyn, Llewelyn; Female: Gwenhwyfar, Gwenhwfar
+Male: Owain, Ywein; Female: Elen, Helen
+Male: Hywel, Howel; Female: Nest, Nesta
+Male: Madog, Madoc; Female: Gwladus, Gwladys
+Male: Maredudd, Meredudd; Female: Heledd
+Male: Iorwerth, Yorwerth; Female: Branwen
+Male: Cadwgan; Female: Ceridwen
+Male: Cadwaladr, Cadwalader; Female: Rhiannon
+Male: Cadfael; Female: Tangwystl
+Male: Meurig; Female: Morfydd
+Male: Morgan; Female: Dyddgu
+Male: Rhodri; Female: Eurgain
+Male: Idwal; Female: Tegau
+Male: Einion; Female: Gwerfyl
+Male: Seisyll, Seissyll; Female: Mared
+Male: Cynan; Female: Gwen
+Male: Bleddyn; Female: Gwenan
+Male: Caradog, Caradoc; Female: Gwenno
+Male: Ceredig; Female: Gwendolen
+Male: Geraint; Female: Gwerful
+Male: Tudur, Tudor; Female: Gwennan
+Male: Ithel; Female: Aneirin
+Male: Dyfnwal; Female: Eluned
+Male: Elidir; Female: Eirian
+Male: Emrys; Female: Esyllt
+Male: Gwrgan; Female: Fflur
+Male: Gwrfoddw; Female: Hafgan
+Male: Gwenwynwyn; Female: Lleucu
+Male: Maelgwn; Female: Luned
+Male: Peredur; Female: Myfanwy
+Male: Tegid; Female: Non
+Male: Trystan, Tristan; Female: Olwen
+Male: Urien; Female: Penarwen
+Male: Ynyr; Female: Tanglwst
+Male: Arthfael; Female: Tegwen
+Male: Arthgen; Female: Teleri
+Male: Brochfael; Female: Goleuddydd
+Male: Caswallon; Female: Eilonwy
+Male: Clydog, Clydawg; Female: Eurddolen
+Male: Custennin; Female: Ceinwen
+Male: Cynbel; Female: Ceinlys
+Male: Cynfelyn; Female: Ceingwen
+Male: Cynwrig; Female: Catrin
+Male: Deiniol; Female: Anghared
+Male: Dewi; Female: Aranrhod
+Male: Edern; Female: Arianwen
+Male: Einudd; Female: Berwyn
+Male: Emyr; Female: Bethan
+Male: Garanwyn; Female: Blodeuwedd
+Male: Goronwy; Female: Branwen
+Male: Gwallawg; Female: Bronwen
+Male: Gweir; Female: Dwynwen
+Male: Gwilim; Female: Eirlys
+Male: Gwriad; Female: Eirwen
+Male: Gwyn; Female: Eleri
+Male: Gwynfor; Female: Enid
+Male: Gwythyr; Female: Eryl
+Male: Ieuan; Female: Eseld
+Male: Iestyn; Female: Euronwy
+Male: Ithel; Female: Eurwen
+Male: Llawdden; Female: Ffraid
+Male: Lludd; Female: Glesni
+Male: Maelgwyn; Female: Glenys
+Male: Marchudd; Female: Goewin
+Male: Meilyr; Female: Goleudydd
+Male: Merfyn; Female: Gwenfrewi
+Male: Nudd; Female: Gwenith
+Male: Owryd; Female: Gwenlliant
+Male: Pasgen; Female: Gwenonwy
+Male: Prydain; Female: Gwenyth
+Male: Rhain; Female: Gwladys
+Male: Rhirid; Female: Gwrthefyr
+Male: Rhun; Female: Haf
+Male: Selyf; Female: Heulwen
+Male: Tegwared; Female: Lleian
+Male: Tewdwr; Female: Llio
+Male: Trahaearn; Female: Lowri
+Male: Tudwal; Female: Mabli
+Male: Tybion; Female: Maldwen
+Male: Cynog; Female: Meddygferch
+Male: Coel; Female: Megan
+Male: Dyfrig; Female: Melangell
+Male: Eifion; Female: Nest ferch
+Male: Gronw; Female: Nia
+Male: Gwion; Female: Nerys
+Male: Hyfaidd; Female: Olwen
+Male: Iago; Female: Perwen
+Male: Lles; Female: Ragnaell
+Male: Maelor; Female: Rhiain
+Male: Rhufon; Female: Rhonwen
+Male: Rhydderch; Female: Seren
+Male: Tegid Foel, Tegid; Female: Tangwen
+Male: Tomos; Female: Tegfedd
+Male: Ysbaddaden; Female: Tegan
+Male: Cadell; Female: Tudful
+Male: Cynddelw; Female: Tywie
+Male: Dyfed; Female: Wenna
+Male: Geraint; Female: Wenfrewi
+Male: Gwgan; Female: Wenhwyfar
+Male: Hoel; Female: Yseult, Esyllt
+Male: Mael; Female: Ynys

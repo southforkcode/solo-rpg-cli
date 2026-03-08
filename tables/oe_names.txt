@@ -1,0 +1,110 @@
+Male: Aelfric, Alfric; Female: Aelfgifu, Aelfgyfu
+Male: Aelfred, Alfred; Female: Aethelflaed, Aethelfled
+Male: Aelfgar; Female: Aethelthryth, Aethelthrith
+Male: Aelfweard; Female: Aethelburh, Aethelburg
+Male: Aelfwine; Female: Aelfwynn, Aelfwyn
+Male: Aelfstan; Female: Aelfswith
+Male: Aelfheah; Female: Aelfthryth, Aelfthrith
+Male: Aelfmaer; Female: Aethelgyth, Aethelgith
+Male: Aelfnoth; Female: Aethelgifu, Aethelgyfu
+Male: Aelfwald; Female: Aethelwynn, Aethelwyn
+Male: Aethelbald; Female: Eadgifu, Eadgyfu
+Male: Aethelberht, Aethelbert; Female: Eadburh, Eadburg
+Male: Aethelred; Female: Eadgyth, Eadgith
+Male: Aethelstan; Female: Eadwynn, Eadwyn
+Male: Aethelweard; Female: Eadflaed, Eadfled
+Male: Aethelwine; Female: Eadhild
+Male: Aethelwold, Aethelweald; Female: Eadthryth, Eadthrith
+Male: Aethelhelm; Female: Eadswith
+Male: Aethelric; Female: Eadwaru
+Male: Aethelmaer; Female: Eadrun
+Male: Eadgar, Edgar; Female: Wulfhild
+Male: Eadmund, Edmund; Female: Wulfgyth, Wulfgith
+Male: Eadred; Female: Wulfflaed, Wulffled
+Male: Eadric; Female: Wulfwaru
+Male: Eadweard, Edward; Female: Wulfwynn, Wulfwyn
+Male: Eadwine, Edwin; Female: Wulfrun
+Male: Eadwig, Edwig; Female: Wulfthryth, Wulfthrith
+Male: Eadwulf; Female: Leofgifu, Leofgyfu
+Male: Ealdred, Aldred; Female: Leofflaed, Leoffled
+Male: Ealdwulf, Aldwulf; Female: Leofhild
+Male: Leofric; Female: Leofrun
+Male: Leofwine; Female: Leofwaru
+Male: Leofstan; Female: Leofwynn, Leofwyn
+Male: Leofmaer; Female: Leofgyth, Leofgith
+Male: Leofsige; Female: Leofswith
+Male: Leofnoth; Female: Leofburh, Leofburg
+Male: Leofheah; Female: Leofthryth, Leofthrith
+Male: Leofweard; Female: Leofgifu, Leofgyfu
+Male: Leofwald; Female: Cwenburh, Cwenburg
+Male: Leofhelm; Female: Cwenhild
+Male: Wulfstan; Female: Cwenthryth, Cwenthrith
+Male: Wulfric; Female: Cynehild
+Male: Wulfgar; Female: Cyneburh, Cyneburg
+Male: Wulfmaer; Female: Cynethryth, Cynethrith
+Male: Wulfnoth; Female: Cyneswith
+Male: Wulfweard; Female: Cynethryth, Cynethrith
+Male: Wulfhere; Female: Wynflaed, Wynfled
+Male: Wulfhelm; Female: Wynhild
+Male: Wulfsige; Female: Wynn, Wynne
+Male: Wulfwine; Female: Wynburh, Wynburg
+Male: Beorhtwulf; Female: Beorhthild
+Male: Beorhtmaer; Female: Beorhtgyth, Beorhtgith
+Male: Beorhtric; Female: Beorhtwynn, Beorhtwyn
+Male: Beorhtnoth; Female: Beorhtflaed, Beorhtfled
+Male: Beornwulf; Female: Beornflaed, Beornfled
+Male: Beornred; Female: Beornhild
+Male: Beornric; Female: Beornthryth, Beornthrith
+Male: Beornwine; Female: Mildthryth, Mildthrith
+Male: Burgheard; Female: Mildburh, Mildburg
+Male: Brihthelm; Female: Mildgyth, Mildgith
+Male: Cenric; Female: Mildwynn, Mildwyn
+Male: Ceolred; Female: Mildflaed, Mildfled
+Male: Ceolwulf; Female: Mildhild
+Male: Ceolheard; Female: Hild, Hilda
+Male: Ceolnoth; Female: Hildburg, Hildburh
+Male: Ceolric; Female: Hildgyth, Hildgith
+Male: Cuthberht, Cuthbert; Female: Hildflaed, Hildfled
+Male: Cuthred; Female: Hildthryth, Hildthrith
+Male: Cuthwulf; Female: Godgifu, Godgyfu
+Male: Cuthwine; Female: Godgyth, Godgith
+Male: Cynebald; Female: Godhild
+Male: Cyneheard; Female: Godwynn, Godwyn
+Male: Cyneric; Female: Godburh, Godburg
+Male: Cynewulf; Female: Godflaed, Godfled
+Male: Cyneweard; Female: Godrun
+Male: Cynehelm; Female: Frithugyth, Frithugith
+Male: Dunstan; Female: Frithuswith
+Male: Dudda; Female: Frithuburh, Frithuburg
+Male: Earnwine; Female: Frithuwynn, Frithuwyn
+Male: Earnweard; Female: Frithuhild
+Male: Earnwulf; Female: Frithuflaed, Frithufled
+Male: Godric; Female: Aebbe, Ebbe
+Male: Godwine, Godwin; Female: Aelfgyth, Aelfgith
+Male: Godheard; Female: Aelfrun
+Male: Godwulf; Female: Aethelwynn, Aethelwyn
+Male: Ordgar; Female: Aethelhild
+Male: Ordwulf; Female: Aethelrun
+Male: Osbeorht; Female: Osburh, Osburg
+Male: Osric; Female: Osgyth, Osgith
+Male: Osweald, Oswald; Female: Osthryth, Osthrith
+Male: Oswine; Female: Oswynn, Oswyn
+Male: Oslac; Female: Osflaed, Osfled
+Male: Sigeberht, Sigebert; Female: Sigeburh, Sigeburg
+Male: Sigered; Female: Sigeflaed, Sigefled
+Male: Sigehelm; Female: Sigegyth, Sigegith
+Male: Sigewulf; Female: Sigeswith
+Male: Styr; Female: Thryth, Thrith
+Male: Swein; Female: Thurhild
+Male: Thurstan, Turstan; Female: Thurgyth, Thurgith
+Male: Wigmund; Female: Wilburg, Wilburh
+Male: Wulfbald; Female: Wealhtheow, Wealthheow
+Male: Wulfheah; Female: Aethelswith
+Male: Wulfwold; Female: Cynegyth, Cynegith
+Male: Beorhthelm; Female: Leofwynn, Leofwyn
+Male: Eadberht, Eadbert; Female: Eadburh, Eadburg
+Male: Osmund; Female: Wulfswith
+Male: Leofwulf; Female: Leofhild
+Male: Aethelnoth; Female: Aethelwaru
+Male: Sigeweard, Sigeward; Female: Eadgifu, Eadgyfu
+Male: Wulfweald, Wulfwald; Female: Wulfburh, Wulfburg
