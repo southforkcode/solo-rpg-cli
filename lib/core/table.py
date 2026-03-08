@@ -1,7 +1,10 @@
 import csv
+import logging
 import random
 from pathlib import Path
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Any, List, Optional
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from lib.core.settings import SettingsManager
@@ -67,30 +70,34 @@ class TableManager:
         # 2. Load table includes from settings
         if self.settings_manager:
             tables_config = self.settings_manager.get("tables", {})
-            for name, path_str in tables_config.items():
-                p = (self.settings_manager.settings_dir / path_str).resolve()
-                if "*" in p.name:
-                    # Glob support
-                    parent_dir = p.parent
-                    if not parent_dir.exists() or not parent_dir.is_dir():
-                        print(
-                            f"Warning: Table include directory not found: {parent_dir}"
-                        )
+            if isinstance(tables_config, dict):
+                dict_config: dict[str, Any] = tables_config  # type: ignore
+                for name, path_str in dict_config.items():
+                    if not isinstance(path_str, str):
                         continue
+                    p = (self.settings_manager.settings_dir / path_str).resolve()
+                    if "*" in p.name:
+                        # Glob support
+                        parent_dir = p.parent
+                        if not parent_dir.exists() or not parent_dir.is_dir():
+                            logger.warning(
+                                f"Table include directory not found: {parent_dir}"
+                            )
+                            continue
 
-                    found = False
-                    for match in parent_dir.glob(p.name):
-                        if match.is_file() and match.suffix in (".txt", ".csv"):
-                            table_name = match.stem
-                            self.tables[table_name] = Table(table_name, match)
-                            found = True
-                    if not found:
-                        print(f"Warning: No tables found matching glob: {p}")
-                else:
-                    if not p.exists() or not p.is_file():
-                        print(f"Warning: Table include file not found: {p}")
+                        found = False
+                        for match in parent_dir.glob(p.name):
+                            if match.is_file() and match.suffix in (".txt", ".csv"):
+                                table_name = match.stem
+                                self.tables[table_name] = Table(table_name, match)
+                                found = True
+                        if not found:
+                            logger.warning(f"No tables found matching glob: {p}")
                     else:
-                        self.tables[name] = Table(name, p)
+                        if not p.exists() or not p.is_file():
+                            logger.warning(f"Table include file not found: {p}")
+                        else:
+                            self.tables[name] = Table(name, p)
 
     def roll(self, table_name: str) -> Optional[str]:
         """Roll on a specific table by name."""

@@ -1,6 +1,12 @@
+import logging
 import tomllib
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, TypeVar, Union, overload
+
+T = TypeVar("T")
+TomlType = Union[Dict[str, "TomlType"], list["TomlType"], str, int, float, bool, None]
+
+logger = logging.getLogger(__name__)
 
 
 class SettingsManager:
@@ -9,7 +15,7 @@ class SettingsManager:
     def __init__(self, base_dir: Path):
         self.base_dir = base_dir
         self.settings_dir = self.base_dir / "settings"
-        self.settings: dict[str, Any] = {}
+        self.settings: Dict[str, TomlType] = {}
         self.load_settings()
 
     def load_settings(self) -> None:
@@ -31,11 +37,18 @@ class SettingsManager:
                                 and isinstance(self.settings[k], dict)
                                 and isinstance(v, dict)
                             ):
-                                self.settings[k].update(v)
+                                current_dict: Dict[str, Any] = self.settings[k]  # type: ignore
+                                current_dict.update(v)
                             else:
                                 self.settings[k] = v
                 except tomllib.TOMLDecodeError as e:
-                    print(f"Error decoding TOML file {p.name}: {e}")
+                    logger.error(f"Error decoding TOML file {p.name}: {e}")
 
-    def get(self, key: str, default: Any = None) -> Any:
+    @overload
+    def get(self, key: str) -> TomlType: ...
+
+    @overload
+    def get(self, key: str, default: T) -> T | TomlType: ...
+
+    def get(self, key: str, default: TomlType | T = None) -> TomlType | T:
         return self.settings.get(key, default)
