@@ -19,7 +19,7 @@ Feature: Table Command
       | npc_names.txt  | Elara         |
     When I execute table command "table roll npc_names"
     Then the command output should include "Result: Elara"
-    And the result should be added to the journal
+    And the result should not be added to the journal
 
   Scenario: Rolling on a CSV table
     Given a game directory with a "tables" folder containing:
@@ -27,7 +27,7 @@ Feature: Table Command
       | loot.csv       | Gold\nPotion  |
     When I execute table command "table roll loot"
     Then the command output should include "Result:"
-    And the result should be added to the journal
+    And the result should not be added to the journal
 
   Scenario: Rolling on a non-existent table
     Given a game directory with a "tables" folder containing:

@@ -1,5 +1,3 @@
-import time
-
 from rich.console import Console
 
 from lib.core.state import State
@@ -103,15 +101,6 @@ class TableCommand(Command):
 
         print(f"Result: {result}")
 
-        # Add to journal
-        from lib.core.journal import JournalEntry
-
-        entry = JournalEntry(
-            title=f"Rolled on table '{table_name}'",
-            content=result,
-            timestamp=time.time(),
-        )
-        state.journal_manager.add_entry(entry)
 
         return result
 
