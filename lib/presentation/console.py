@@ -45,7 +45,8 @@ class DefaultConsole:
         return self.session.prompt("> ")
 
     def print(self, text: str | object) -> None:
-        # If it's a string, we print it directly. Otherwise let rich handle it or pass it on.
+        # If it's a string, we print it directly.
+        # Otherwise let rich handle it or pass it on.
         self._rich_console.print(text)
 
 

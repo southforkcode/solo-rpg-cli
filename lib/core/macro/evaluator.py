@@ -115,6 +115,7 @@ class MacroEvaluator:
         args: List[str],
         exec_cb: Callable[[str], Any],
         roll_cb: Callable[[str], Any],
+        echo_cb: Callable[[str], None],
         global_vars: Optional[Dict[str, Any]] = None,
     ) -> None:
         """Initialize parameters and evaluation callbacks."""
@@ -122,6 +123,7 @@ class MacroEvaluator:
         self.args = args
         self.exec_cb = exec_cb
         self.roll_cb = roll_cb
+        self.echo_cb = echo_cb
         self.context: Dict[str, Any] = global_vars or {}
         self.outputs: List[str] = []
         self._bind_args()
@@ -205,7 +207,7 @@ class MacroEvaluator:
             arg_val = interpolate(stmt.args[0].expr, self.context)
 
         if stmt.func_name == "echo":
-            print(arg_val)
+            self.echo_cb(arg_val)
             self.outputs.append(arg_val)
             return None
         elif stmt.func_name == "roll":
@@ -241,7 +243,7 @@ class MacroEvaluator:
                 content.startswith("'") and content.endswith("'")
             ):
                 content = content[1:-1]
-            print(content)
+            self.echo_cb(content)
             self.outputs.append(content)
             return None
 

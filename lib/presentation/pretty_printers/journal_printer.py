@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from rich.console import Console
+
 from lib.core.journal import JournalEntry
 from lib.presentation.pretty import PrettyPrinter
 
@@ -10,12 +12,15 @@ class JournalPrinter(PrettyPrinter):
 
     def print(self, obj: object) -> None:
         assert isinstance(obj, list)
+        console = Console()
         if not obj:
-            print("No journal entries found.")
+            console.print("No journal entries found.")
             return
 
         for i, entry in enumerate(obj, start=1):
             dt = datetime.fromtimestamp(entry.timestamp)
-            print(f"[{i}] {entry.title} - {dt.strftime('%c')}")
-            print(entry.content)
-            print("-" * 40)
+            console.print(
+                f"[italic gray][{i}] {entry.title} - {dt.strftime('%c')}[/italic gray]"
+            )
+            console.print(f"[italic gray]{entry.content}[/italic gray]")
+            console.print(f"[italic gray]{'-' * 40}[/italic gray]")

@@ -64,7 +64,9 @@ class TestMacroEvaluator(unittest.TestCase):
         )
         macros = parse_macros(text)
         macro = macros[0]
-        evaluator = MacroEvaluator(macro, ["10"], lambda x: None, lambda x: None)
+        evaluator = MacroEvaluator(
+            macro, ["10"], lambda x: None, lambda x: None, lambda x: None
+        )
         self.assertEqual(evaluator.run(), 15)
 
     def test_evaluate_condition(self):

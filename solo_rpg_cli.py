@@ -63,10 +63,10 @@ if __name__ == "__main__":
     )
 
     from lib.presentation.console import DefaultConsole
-    
+
     console = DefaultConsole(gamedir_path)
     repl = REPLEnvironment(gamedir_path, state, console=console)
-    
+
     repl.command_registry.register(JournalCommand())
     repl.command_registry.register(JourneyCommand())
     repl.command_registry.register(MacroCommand())

@@ -1,5 +1,8 @@
 from typing import Optional
 
+from rich.console import Console
+from rich.table import Table
+
 from lib.core.state import State
 from lib.presentation.lexer import Lexer
 
@@ -37,6 +40,17 @@ class CommandRegistry:
         )
 
     def help(self):
-        # print a summary of all commands
+        console = Console()
+        table = Table(show_header=True, header_style="bold magenta", expand=True)
+        table.add_column("Command", style="cyan", width=20)
+        table.add_column("Description", style="white")
+
         for command in self.commands:
-            print(f"{command.command} - {command.description}")
+            cmd_str = command.command
+            if command.aliases:
+                cmd_str += f" ({', '.join(command.aliases)})"
+            table.add_row(cmd_str, command.description)
+
+        console.print()
+        console.print(table)
+        console.print()

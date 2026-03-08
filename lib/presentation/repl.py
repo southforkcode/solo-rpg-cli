@@ -2,8 +2,7 @@ import time
 import traceback
 from pathlib import Path
 
-from prompt_toolkit import PromptSession
-from prompt_toolkit.history import FileHistory
+from rich.markdown import Markdown
 
 from lib.core.macro import MacroEvaluator
 from lib.core.state import State
@@ -40,7 +39,10 @@ class _HelpCommand(Command):
 
     def help(self) -> None:
         """Print the help documentation for the help command itself."""
-        self.repl.console.print("help [command] - Show help for a command")
+        self.repl.console.print(
+            "[bold cyan]help[/bold cyan] \\[[italic]command[/italic]] "
+            "- Show help for a command"
+        )
 
 
 class _ExitCommand(Command):
@@ -60,7 +62,10 @@ class _ExitCommand(Command):
 
     def help(self) -> None:
         """Print the help documentation for the exit command."""
-        self.repl.console.print("exit|quit|bye - Exit the REPL")
+        self.repl.console.print(
+            "[bold cyan]exit[/bold cyan]|[bold cyan]quit[/bold cyan]|"
+            "[bold cyan]bye[/bold cyan] - Exit the REPL"
+        )
 
 
 class _LastCommand(Command):
@@ -84,10 +89,10 @@ class _LastCommand(Command):
 
     def help(self) -> None:
         """Print the help documentation for the last command."""
-        self.repl.console.print("last [offset] - Get the result of the last command")
-
-
-
+        self.repl.console.print(
+            "[bold cyan]last[/bold cyan] \\[[italic]offset[/italic]] "
+            "- Get the result of the last command"
+        )
 
 
 class CommandExecutor:
@@ -111,6 +116,7 @@ class CommandExecutor:
 
                 if last_result is not None:
                     from lib.core.journal import JournalEntry
+
                     self.repl.state.journal_manager.add_entry(
                         JournalEntry(
                             title="Last Result",
@@ -142,14 +148,19 @@ class CommandExecutor:
             def cb_roll(text: str) -> object:
                 sub_lexer = Lexer(text)
                 from lib.presentation.commands.roll_command import RollCommand
+
                 cmd_obj = RollCommand()
                 return cmd_obj.execute(sub_lexer, self.repl.state)
+
+            def cb_echo(text: str) -> None:
+                self.repl.console.print(Markdown(text))
 
             evaluator = MacroEvaluator(
                 macro,
                 args,
                 cb_exec,
                 cb_roll,
+                cb_echo,
                 global_vars=self.repl.state.variable_manager.get_all(),
             )
             try:
@@ -160,6 +171,7 @@ class CommandExecutor:
 
             if is_journal:
                 from lib.core.journal import JournalEntry
+
                 final_output = (
                     str(ret) if ret is not None else "\n".join(evaluator.outputs)
                 )
@@ -196,8 +208,10 @@ class REPLEnvironment:
         self.history = History()
         self.command_registry = CommandRegistry()
         self.pretty_printer_registry = PrettyPrinterRegistry()
+        self.console: Console
         if console is None:
             from lib.presentation.console import DefaultConsole
+
             self.console = DefaultConsole(gamedir)
         else:
             self.console = console
