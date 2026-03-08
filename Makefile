@@ -3,5 +3,5 @@
 test:
 	uv run ruff check .
 	uv run mypy .
-	uv run python -m unittest discover test/unit
+	uv run pytest --cov=lib --cov-report=term-missing --cov-fail-under=80 test/unit
 	uv run behave test/features
