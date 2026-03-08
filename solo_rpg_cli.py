@@ -35,6 +35,7 @@ if __name__ == "__main__":
     from lib.core.journal import JournalManager
     from lib.core.journey import JourneyManager
     from lib.core.macro import MacroManager
+    from lib.core.settings import SettingsManager
     from lib.core.state import State
     from lib.core.table import TableManager
     from lib.core.variable import VariableManager
@@ -50,7 +51,8 @@ if __name__ == "__main__":
     journal_mgr = JournalManager(gamedir_path)
     journey_mgr = JourneyManager(gamedir_path)
     macro_mgr = MacroManager(gamedir_path)
-    table_mgr = TableManager(gamedir_path)
+    settings_mgr = SettingsManager(gamedir_path)
+    table_mgr = TableManager(gamedir_path, settings_mgr)
     var_mgr = VariableManager(gamedir_path)
 
     state = State(
@@ -58,6 +60,7 @@ if __name__ == "__main__":
         journal_manager=journal_mgr,
         journey_manager=journey_mgr,
         macro_manager=macro_mgr,
+        settings_manager=settings_mgr,
         table_manager=table_mgr,
         variable_manager=var_mgr,
     )

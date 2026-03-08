@@ -4,6 +4,7 @@ from typing import Any
 from lib.core.journal import JournalManager
 from lib.core.journey import JourneyManager
 from lib.core.macro import MacroManager
+from lib.core.settings import SettingsManager
 from lib.core.table import TableManager
 from lib.core.variable import VariableManager
 
@@ -15,6 +16,7 @@ class State:
         journal_manager: JournalManager,
         journey_manager: JourneyManager,
         macro_manager: MacroManager,
+        settings_manager: SettingsManager,
         table_manager: TableManager,
         variable_manager: VariableManager,
     ):
@@ -22,6 +24,7 @@ class State:
         self.journal_manager = journal_manager
         self.journey_manager = journey_manager
         self.macro_manager = macro_manager
+        self.settings_manager = settings_manager
         self.table_manager = table_manager
         self.variable_manager = variable_manager
         self.state: dict[str, Any] = {}
@@ -50,12 +53,14 @@ class State:
 
 class StateFactory:
     @staticmethod
-    def create(base_dir: Path) -> State:
+    def create(base_dir: Path) -> "State":
+        settings_manager = SettingsManager(base_dir)
         return State(
             base_dir=base_dir,
             journal_manager=JournalManager(base_dir),
             journey_manager=JourneyManager(base_dir),
             macro_manager=MacroManager(base_dir),
-            table_manager=TableManager(base_dir),
+            settings_manager=settings_manager,
+            table_manager=TableManager(base_dir, settings_manager),
             variable_manager=VariableManager(base_dir),
         )

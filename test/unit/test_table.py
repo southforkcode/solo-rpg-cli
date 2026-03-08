@@ -2,6 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from lib.core.settings import SettingsManager
 from lib.core.table import Table, TableManager
 
 
@@ -85,3 +86,41 @@ class TestTableManager(unittest.TestCase):
         self.assertEqual(manager.list_tables(), [])
         self.assertIsNone(manager.roll("names"))
         empty_dir.cleanup()
+
+    def test_settings_table_includes(self):
+        # Create an external directory for "borrowed" tables
+        external_dir = Path(self.temp_dir.name) / "external_data"
+        external_dir.mkdir()
+
+        # Borrowed table A
+        table_a = external_dir / "borrowed_a.txt"
+        table_a.write_text("Row1\nRow2", encoding="utf-8")
+
+        # Borrowed table B (for glob testing)
+        glob_dir = external_dir / "glob_tables"
+        glob_dir.mkdir()
+        (glob_dir / "borrowed_b.txt").write_text("Val1\nVal2", encoding="utf-8")
+        (glob_dir / "borrowed_c.txt").write_text("Item1\nItem2", encoding="utf-8")
+
+        # Create settings directory and game.toml
+        settings_dir = self.base_dir / "settings"
+        settings_dir.mkdir()
+        toml_content = """
+        [tables]
+        external_a = "../external_data/borrowed_a.txt"
+        globbed = "../external_data/glob_tables/*.txt"
+        """
+        (settings_dir / "game.toml").write_text(toml_content, encoding="utf-8")
+
+        # Initialize SettingsManager and TableManager
+        settings_manager = SettingsManager(self.base_dir)
+        manager = TableManager(self.base_dir, settings_manager=settings_manager)
+
+        # External table directly included
+        self.assertIn("external_a", manager.list_tables())
+        self.assertIn(manager.roll("external_a"), ["Row1", "Row2"])
+
+        # Tables included via glob
+        self.assertIn("borrowed_b", manager.list_tables())
+        self.assertIn("borrowed_c", manager.list_tables())
+        self.assertIn(manager.roll("borrowed_b"), ["Val1", "Val2"])
