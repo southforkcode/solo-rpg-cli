@@ -5,16 +5,34 @@ from behave import given, then, when
 
 from lib.presentation.lexer import Lexer
 from lib.presentation.repl import REPLEnvironment
+from lib.core.state import StateFactory
 
 
 @given("a new repl session")
 def step_impl_new_session(context):
     context.temp_dir = tempfile.mkdtemp()
     context.gamedir = Path(context.temp_dir)
-    context.repl = REPLEnvironment(gamedir=context.gamedir)
-    context.repl.command_registry.register_directory(Path("lib/presentation/commands"))
-    from lib.presentation.repl import _LastCommand
+    state = StateFactory.create(context.gamedir)
+    context.repl = REPLEnvironment(context.gamedir, state)
+    from lib.presentation.commands.journal_command import JournalCommand
+    from lib.presentation.commands.journey_command import JourneyCommand
+    from lib.presentation.commands.macro_command import MacroCommand
+    from lib.presentation.commands.oracle_command import OracleCommand
+    from lib.presentation.commands.roll_command import RollCommand
+    from lib.presentation.commands.summary_command import SummaryCommand
+    from lib.presentation.commands.table_command import TableCommand
+    from lib.presentation.commands.var_command import VarCommand
 
+    context.repl.command_registry.register(JournalCommand())
+    context.repl.command_registry.register(JourneyCommand())
+    context.repl.command_registry.register(MacroCommand())
+    context.repl.command_registry.register(OracleCommand())
+    context.repl.command_registry.register(RollCommand())
+    context.repl.command_registry.register(SummaryCommand())
+    context.repl.command_registry.register(TableCommand())
+    context.repl.command_registry.register(VarCommand())
+    
+    from lib.presentation.repl import _LastCommand
     context.repl.command_registry.register(_LastCommand(context.repl))
     context.repl.pretty_printer_registry.register_directory(Path("lib/presentation/pretty_printers"))
     context.output = ""
@@ -32,7 +50,7 @@ def step_impl_enter_command(context, command):
     old_stdout = sys.stdout
     sys.stdout = io.StringIO()
 
-    result = context.repl.execute(lexer)
+    result = context.repl.executor.execute(lexer)
 
     # if it's not None, REPL adds to history and prints it
     # (handled within `repl.run()`, but here we call `execute` directly)

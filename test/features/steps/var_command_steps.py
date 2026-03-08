@@ -5,6 +5,7 @@ from behave import given, then, when
 
 from lib.presentation.commands.var_command import VarCommand
 from lib.presentation.repl import REPLEnvironment
+from lib.core.state import StateFactory
 
 
 @given("the game is initialized")
@@ -14,7 +15,8 @@ def step_impl_game_initialized(context):
         context.base_dir = Path(context.temp_dir)
 
     if not hasattr(context, "repl") or context.repl is None:
-        context.repl = REPLEnvironment(context.base_dir)
+        state = StateFactory.create(context.base_dir)
+        context.repl = REPLEnvironment(context.base_dir, state)
         context.repl.command_registry.register(VarCommand())
 
 
@@ -32,7 +34,7 @@ def step_impl_type_command(context, command):
     old_stdout = sys.stdout
     sys.stdout = my_stdout = StringIO()
     try:
-        context.last_output = context.repl.execute(lexer)
+        context.last_output = context.repl.executor.execute(lexer)
     except Exception as e:
         context.last_output = str(e)
     finally:

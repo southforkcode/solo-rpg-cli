@@ -2,7 +2,6 @@ import importlib.util
 import inspect
 import sys
 from pathlib import Path
-from typing import Any
 
 from rich.console import Console
 

@@ -1,5 +1,4 @@
 import time
-from typing import Any
 
 from lib.core.state import State
 from lib.presentation.command import Command
