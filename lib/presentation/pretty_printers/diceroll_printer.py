@@ -11,4 +11,6 @@ class DiceRollPrinter(PrettyPrinter):
     def print(self, obj: object) -> None:
         assert isinstance(obj, DiceRollResult)
         console = Console()
-        console.print(f"{obj.total} ({', '.join(map(str, obj.results))})")
+        console.print(
+            f"[green]{obj.total} ({', '.join(map(str, obj.results))})[/green]"
+        )

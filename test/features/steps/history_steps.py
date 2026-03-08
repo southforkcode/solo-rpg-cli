@@ -3,9 +3,9 @@ from pathlib import Path
 
 from behave import given, then, when
 
+from lib.core.state import StateFactory
 from lib.presentation.lexer import Lexer
 from lib.presentation.repl import REPLEnvironment
-from lib.core.state import StateFactory
 
 
 @given("a new repl session")
@@ -31,10 +31,13 @@ def step_impl_new_session(context):
     context.repl.command_registry.register(SummaryCommand())
     context.repl.command_registry.register(TableCommand())
     context.repl.command_registry.register(VarCommand())
-    
+
     from lib.presentation.repl import _LastCommand
+
     context.repl.command_registry.register(_LastCommand(context.repl))
-    context.repl.pretty_printer_registry.register_directory(Path("lib/presentation/pretty_printers"))
+    context.repl.pretty_printer_registry.register_directory(
+        Path("lib/presentation/pretty_printers")
+    )
     context.output = ""
 
 

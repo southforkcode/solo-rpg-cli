@@ -1,6 +1,8 @@
 import unittest
 from pathlib import Path
-from lib.core.journey import JourneyManager, Journey
+
+from lib.core.journey import JourneyManager
+
 
 class TestJourneyManager(unittest.TestCase):
     def setUp(self):
@@ -12,22 +14,28 @@ class TestJourneyManager(unittest.TestCase):
     def tearDown(self):
         if self.gamedir.exists():
             for f in self.gamedir.glob("**/*"):
-                if f.is_file(): f.unlink()
+                if f.is_file():
+                    f.unlink()
             for d in self.gamedir.glob("*"):
-                if d.is_dir(): d.rmdir()
+                if d.is_dir():
+                    d.rmdir()
             self.gamedir.rmdir()
 
     def test_add_and_list_journey(self):
-        journey = self.manager.add_journey(title="Dragon", description="Kill it", difficulty="hard", steps=5)
+        self.manager.add_journey(
+            title="Dragon", description="Kill it", difficulty="hard", steps=5
+        )
         journeys = self.manager.list_journeys()
         self.assertEqual(len(journeys), 1)
         self.assertEqual(journeys[0].title, "Dragon")
         self.assertEqual(journeys[0].state, "active")
 
     def test_remove_update_and_get(self):
-        journey = self.manager.add_journey(title="Goblin", description="Kill it", difficulty="easy", steps=1)
+        journey = self.manager.add_journey(
+            title="Goblin", description="Kill it", difficulty="easy", steps=1
+        )
         self.assertIsNotNone(self.manager.get_journey(str(journey.id)))
-        
+
         journey.state = "completed"
         self.assertTrue(self.manager.update_journey(journey))
         self.assertEqual(self.manager.get_journey(str(journey.id)).state, "completed")

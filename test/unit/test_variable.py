@@ -1,6 +1,8 @@
 import unittest
 from pathlib import Path
+
 from lib.core.variable import VariableManager
+
 
 class TestVariableManager(unittest.TestCase):
     def setUp(self):
@@ -12,9 +14,11 @@ class TestVariableManager(unittest.TestCase):
     def tearDown(self):
         if self.gamedir.exists():
             for f in self.gamedir.glob("**/*"):
-                if f.is_file(): f.unlink()
+                if f.is_file():
+                    f.unlink()
             for d in self.gamedir.glob("*"):
-                if d.is_dir(): d.rmdir()
+                if d.is_dir():
+                    d.rmdir()
             self.gamedir.rmdir()
 
     def test_set_and_get_var(self):

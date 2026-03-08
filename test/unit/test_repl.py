@@ -16,7 +16,7 @@ class DummyCommand:
         return "Dummy Result"
 
     def help(self):
-        from lib.presentation.console import RichConsole
+
         print("dummy - dummy help")
 
 
@@ -29,6 +29,7 @@ class TestREPLEnvironment(unittest.TestCase):
         from lib.core.macro import MacroManager
         from lib.core.table import TableManager
         from lib.core.variable import VariableManager
+
         self.state = State(
             base_dir=self.gamedir,
             journal_manager=JournalManager(self.gamedir),
@@ -47,7 +48,7 @@ class TestREPLEnvironment(unittest.TestCase):
     import io
     from unittest.mock import patch
 
-    @patch('sys.stdout', new_callable=io.StringIO)
+    @patch("sys.stdout", new_callable=io.StringIO)
     def test_help_command(self, mock_stdout):
         console = MockConsole(["help", "exit"])
         repl = REPLEnvironment(self.gamedir, self.state, console=console)
@@ -55,7 +56,7 @@ class TestREPLEnvironment(unittest.TestCase):
         outputs_str = mock_stdout.getvalue() + " ".join(str(o) for o in console.outputs)
         self.assertIn("help - Show help for a command", outputs_str)
 
-    @patch('sys.stdout', new_callable=io.StringIO)
+    @patch("sys.stdout", new_callable=io.StringIO)
     def test_unknown_command(self, mock_stdout):
         console = MockConsole(["unknown_cmd", "exit"])
         repl = REPLEnvironment(self.gamedir, self.state, console=console)
@@ -63,7 +64,7 @@ class TestREPLEnvironment(unittest.TestCase):
         outputs_str = mock_stdout.getvalue() + " ".join(str(o) for o in console.outputs)
         self.assertIn("Command 'unknown_cmd' not found", outputs_str)
 
-    @patch('sys.stdout', new_callable=io.StringIO)
+    @patch("sys.stdout", new_callable=io.StringIO)
     def test_last_command(self, mock_stdout):
         console = MockConsole(["dummy", "last 0", "exit"])
         repl = REPLEnvironment(self.gamedir, self.state, console=console)
@@ -72,7 +73,7 @@ class TestREPLEnvironment(unittest.TestCase):
         outputs = mock_stdout.getvalue() + "".join(str(o) for o in console.outputs)
         self.assertIn("Dummy Result", outputs)
 
-    @patch('sys.stdout', new_callable=io.StringIO)
+    @patch("sys.stdout", new_callable=io.StringIO)
     def test_macro_not_found(self, mock_stdout):
         console = MockConsole(["/missing_macro", "exit"])
         repl = REPLEnvironment(self.gamedir, self.state, console=console)
@@ -97,9 +98,10 @@ class TestREPLEnvironment(unittest.TestCase):
     def test_journal_no_last_result(self):
         import io
         from unittest.mock import patch
+
         console = MockConsole(["//", "exit"])
         repl = REPLEnvironment(self.gamedir, self.state, console=console)
-        with patch('sys.stdout', new_callable=io.StringIO) as mock_stdout:
+        with patch("sys.stdout", new_callable=io.StringIO) as mock_stdout:
             repl.run()
             output = mock_stdout.getvalue() + " ".join(str(o) for o in console.outputs)
             self.assertIn("No previous valid result to journal", output)

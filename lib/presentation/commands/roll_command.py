@@ -1,4 +1,3 @@
-
 from lib.core.dice_roller import DiceRerollType, DiceRoller
 from lib.core.state import State
 from lib.presentation.command import Command

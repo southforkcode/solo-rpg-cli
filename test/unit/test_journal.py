@@ -1,6 +1,8 @@
 import unittest
 from pathlib import Path
-from lib.core.journal import JournalManager, JournalEntry
+
+from lib.core.journal import JournalEntry, JournalManager
+
 
 class TestJournalManager(unittest.TestCase):
     def setUp(self):
@@ -12,9 +14,11 @@ class TestJournalManager(unittest.TestCase):
     def tearDown(self):
         if self.gamedir.exists():
             for f in self.gamedir.glob("**/*"):
-                if f.is_file(): f.unlink()
+                if f.is_file():
+                    f.unlink()
             for d in self.gamedir.glob("*"):
-                if d.is_dir(): d.rmdir()
+                if d.is_dir():
+                    d.rmdir()
             self.gamedir.rmdir()
 
     def test_add_and_list_entries(self):
@@ -30,18 +34,20 @@ class TestJournalManager(unittest.TestCase):
         entry2 = JournalEntry(title="Test2", content="Content2", timestamp=200.0)
         self.manager.add_entry(entry1)
         self.manager.add_entry(entry2)
-        
+
         # Delete by index
         self.assertTrue(self.manager.delete_entry("1"))
         self.assertEqual(len(self.manager.get_entries()), 1)
-        
+
         # Delete by title
         self.assertTrue(self.manager.delete_entry("Test2"))
         self.assertEqual(len(self.manager.get_entries()), 0)
 
     def test_load_journal(self):
         journal_file = self.gamedir / "journal.txt"
-        journal_file.write_text("Entry 1\n100.0\nContent A\n\n---\n\nEntry 2\ninvalid_time\nContent B")
+        journal_file.write_text(
+            "Entry 1\n100.0\nContent A\n\n---\n\nEntry 2\ninvalid_time\nContent B"
+        )
         manager = JournalManager(self.gamedir)
         entries = manager.get_entries()
         self.assertEqual(len(entries), 2)

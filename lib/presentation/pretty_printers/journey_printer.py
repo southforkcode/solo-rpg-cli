@@ -1,3 +1,4 @@
+from rich.console import Console
 
 from lib.core.journey import Journey
 from lib.presentation.pretty import PrettyPrinter
@@ -13,13 +14,14 @@ class JourneyPrinter(PrettyPrinter):
     def print(self, obj: object) -> None:
         assert isinstance(obj, list)
         """Print the journey list to stdout."""
+        console = Console()
         if not obj:
-            print("No journeys found.")
+            console.print("No journeys found.")
             return
 
         for journey in obj:
             step_str = "infinity" if journey.steps is None else str(journey.steps)
-            print(
-                f"{journey.id}. {journey.title} ({journey.state}) "
-                f"{journey.progress}/{step_str}"
+            console.print(
+                f"[blue]{journey.id}. {journey.title} ({journey.state}) "
+                f"{journey.progress}/{step_str}[/blue]"
             )

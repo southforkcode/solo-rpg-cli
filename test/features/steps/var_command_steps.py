@@ -3,9 +3,9 @@ from pathlib import Path
 
 from behave import given, then, when
 
+from lib.core.state import StateFactory
 from lib.presentation.commands.var_command import VarCommand
 from lib.presentation.repl import REPLEnvironment
-from lib.core.state import StateFactory
 
 
 @given("the game is initialized")

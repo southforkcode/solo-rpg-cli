@@ -5,9 +5,9 @@ from pathlib import Path
 
 from behave import given, then, when
 
+from lib.core.state import StateFactory
 from lib.presentation.lexer import Lexer
 from lib.presentation.repl import REPLEnvironment
-from lib.core.state import StateFactory
 
 
 @given("a new macro testing session")
