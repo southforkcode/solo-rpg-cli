@@ -29,20 +29,20 @@ class JournalCommand(Command):
         words = text_before_cursor.split()
         if not words:
             return []
-        
-        is_new_word = text_before_cursor.endswith(' ')
+
+        is_new_word = text_before_cursor.endswith(" ")
         verbs = ["add", "list", "delete", "del"]
-        
+
         if len(words) == 1 and not is_new_word:
             return []
-            
+
         if len(words) == 1 and is_new_word:
             return verbs
-            
+
         if len(words) == 2 and not is_new_word:
             prefix = words[1].lower()
             return [v for v in verbs if v.startswith(prefix)]
-            
+
         return []
 
     def execute(self, lexer: Lexer, state: State) -> object:

@@ -161,3 +161,32 @@ To run this macro in the CLI, you would simply type:
 > action_roll 2
 ```
 (where `2` is the value passed to the `stat` argument).
+
+---
+
+## Game Settings & Table Includes
+
+In addition to standard functional components, the CLI supports an externalized static settings mechanism via the `settings/` directory in your game directory. You can utilize TOML (`*.toml`) configuration files to load application settings dynamically.
+
+### Table Includes
+The primary capability of the `settings` feature is **Table Includes**. This lets you define rollable tables stored outside of your main `tables/` directory (e.g. referencing global folders, or other campaign references).
+
+**To explicitly map a table:**
+Create a TOML file (e.g., `settings/game.toml`) containing a `[tables]` block:
+
+```toml
+[tables]
+# Points 'external_names' directly to the absolute or relative path
+external_names = "../shared_tables/names.txt"
+```
+The imported file resolves relative to the `settings/` folder and operates identically to standard tables. In the REPL, type `$external_names` to roll the imported table.
+
+**To load tables via glob parameters:**
+If you want to pull multiple tables out of a specific directory without manually tracking them, you can utilize the `*` wildcard:
+
+```toml
+[tables]
+# Sweeps the shared_tables folder for any .txt files containing 'encounters'
+all_encounters = "../shared_tables/*_encounters.txt"
+```
+The file stem (file name minus extension) acts as the table name for all swept files automatically (i.e. if the glob resolved `forest_encounters.txt`, the table name becomes `$forest_encounters`).

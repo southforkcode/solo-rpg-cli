@@ -37,7 +37,7 @@ class DefaultConsole:
         if self._session is None:
             self._session = PromptSession(
                 history=FileHistory(str(self.gamedir / "history")),
-                completer=self.completer
+                completer=self.completer,
             )
         return self._session
 
@@ -66,6 +66,7 @@ class DefaultConsole:
             return line in ("y", "yes")
 
         from rich.prompt import Confirm
+
         return Confirm.ask(prompt, console=self._rich_console)
 
 

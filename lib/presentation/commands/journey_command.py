@@ -31,23 +31,30 @@ class JourneyCommand(Command):
         words = text_before_cursor.split()
         if not words:
             return []
-        
-        is_new_word = text_before_cursor.endswith(' ')
+
+        is_new_word = text_before_cursor.endswith(" ")
         verbs = [
-            "start", "list", "progress", "pause", "resume", 
-            "complete", "stop", "remove", "rm"
+            "start",
+            "list",
+            "progress",
+            "pause",
+            "resume",
+            "complete",
+            "stop",
+            "remove",
+            "rm",
         ]
-        
+
         if len(words) == 1 and not is_new_word:
             return []
-            
+
         if len(words) == 1 and is_new_word:
             return verbs
-            
+
         if len(words) == 2 and not is_new_word:
             prefix = words[1].lower()
             return [v for v in verbs if v.startswith(prefix)]
-            
+
         verb = words[1].lower()
         if verb in ["progress", "pause", "resume", "complete", "stop", "remove", "rm"]:
             if verb in ["progress", "pause", "complete", "stop"]:
@@ -56,21 +63,20 @@ class JourneyCommand(Command):
                 journeys = state.journey_manager.list_journeys("paused")
             else:
                 journeys = state.journey_manager.list_journeys()
-                
+
             titles = [j.title for j in journeys] + [str(j.id) for j in journeys]
             titles = [f'"{t}"' if " " in t else t for t in titles]
-            
+
             if len(words) == 2 and is_new_word:
                 return titles
-            
+
             if len(words) == 3 and not is_new_word:
                 prefix = words[2].lower()
-                clean_prefix = prefix.strip('"\'')
+                clean_prefix = prefix.strip("\"'")
                 return [
-                    t for t in titles 
-                    if t.strip('"\'').lower().startswith(clean_prefix)
+                    t for t in titles if t.strip("\"'").lower().startswith(clean_prefix)
                 ]
-                
+
         return []
 
     def execute(self, lexer: Lexer, state: State) -> object:

@@ -207,10 +207,11 @@ class REPLEnvironment:
         self.state.set("gamedir", gamedir)
         self.history = History()
         self.command_registry = CommandRegistry()
-        
+
         from lib.presentation.completer import REPLCompleter
+
         self.completer = REPLCompleter(self.command_registry, self.state)
-        
+
         self.pretty_printer_registry = PrettyPrinterRegistry()
         self.console: Console
         if console is None:
