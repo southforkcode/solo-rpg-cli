@@ -215,6 +215,7 @@ class REPLEnvironment:
             self.console = DefaultConsole(gamedir)
         else:
             self.console = console
+        self.state.set("console", self.console)
         self.executor = CommandExecutor(self)
         self._quit_requested = False
         self._save_result = True
@@ -223,6 +224,14 @@ class REPLEnvironment:
         self.command_registry.register(_HelpCommand(self))
         self.command_registry.register(_ExitCommand(self))
         self.command_registry.register(_LastCommand(self))
+
+        if len(self.state.journal_manager.get_entries()) == 0:
+            self.console.print(
+                "\n[bold green]Welcome to your new campaign![/bold green]\n"
+                "Type [bold cyan]journey start 'The Beginning'[/bold cyan] "
+                "to embark on your adventure, or type [bold cyan]help[/bold cyan] "
+                "to see available commands.\n"
+            )
 
         while True:
             self._save_result = True

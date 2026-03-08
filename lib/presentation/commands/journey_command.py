@@ -237,19 +237,27 @@ class JourneyCommand(Command):
 
         step_str = "infinity" if journey.steps is None else str(journey.steps)
 
-        try:
-            ans = prompt(
-                f'Remove journey "{journey.title}" '
-                f"({journey.progress}/{step_str}) Y/N? "
+        console = state.get("console")
+        if console:
+            prompt_str = (
+                f'Remove journey "{journey.title}" ({journey.progress}/{step_str})?'
             )
-        except (EOFError, KeyboardInterrupt):
-            return "Cancelled."
+            if not console.confirm(prompt_str):
+                return "Cancelled."
+        else:
+            # Fallback if console is not available in state for some reason
+            try:
+                ans = prompt(
+                    f'Remove journey "{journey.title}" '
+                    f"({journey.progress}/{step_str}) Y/N? "
+                )
+            except (EOFError, KeyboardInterrupt):
+                return "Cancelled."
+            if ans.lower() != "y":
+                return "Cancelled."
 
-        if ans.lower() == "y":
-            state.journey_manager.remove_journey(str(journey.id))
-            return f'Journey "{journey.title}" removed.'
-
-        return "Cancelled."
+        state.journey_manager.remove_journey(str(journey.id))
+        return f'Journey "{journey.title}" removed.'
 
     def help(self):
         """Print help information for the journey command."""

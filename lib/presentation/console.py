@@ -18,6 +18,10 @@ class Console(Protocol):
         """Print output to the user."""
         ...
 
+    def confirm(self, prompt: str) -> bool:
+        """Prompt the user for a yes/no confirmation."""
+        ...
+
 
 class DefaultConsole:
     """Default implementation of Console using prompt_toolkit and rich."""
@@ -49,6 +53,19 @@ class DefaultConsole:
         # Otherwise let rich handle it or pass it on.
         self._rich_console.print(text)
 
+    def confirm(self, prompt: str) -> bool:
+        """
+        Prompt the user for a yes/no confirmation.
+        Uses rich's Confirm if available and interactive, else basic input.
+        """
+        if not sys.stdin.isatty() or not sys.stdout.isatty():
+            print(f"{prompt} [y/n]: ", end="", flush=True)
+            line = sys.stdin.readline().strip().lower()
+            return line in ("y", "yes")
+
+        from rich.prompt import Confirm
+        return Confirm.ask(prompt, console=self._rich_console)
+
 
 class MockConsole:
     """Mock implementation of Console for testing purposes."""
@@ -64,3 +81,13 @@ class MockConsole:
 
     def print(self, text: str | object) -> None:
         self.outputs.append(text)
+
+    def confirm(self, prompt: str) -> bool:
+        """
+        Mock implementation of confirmation.
+        Reads the next input to determine true/false.
+        """
+        if not self.inputs:
+            return False
+        response = self.inputs.pop(0).strip().lower()
+        return response in ("y", "yes")

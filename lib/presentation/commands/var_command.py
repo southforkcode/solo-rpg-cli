@@ -127,6 +127,10 @@ class VarCommand(Command):
         if not name:
             return "Usage: var delete <name>"
 
+        console = state.get("console")
+        if console and not console.confirm(f"Delete variable '{name}'?"):
+            return "Cancelled."
+            
         if state.variable_manager.delete_var(name):
             return f"Variable '{name}' deleted."
         else:

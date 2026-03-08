@@ -102,6 +102,10 @@ class JournalCommand(Command):
             return "Error: Please provide a title or index to delete."
 
         identifier = " ".join(identifier_parts)
+        console = state.get("console")
+        if console and not console.confirm(f"Delete journal entry '{identifier}'?"):
+            return "Cancelled."
+
         if state.journal_manager.delete_entry(identifier):
             return f"Journal entry '{identifier}' deleted."
         else:

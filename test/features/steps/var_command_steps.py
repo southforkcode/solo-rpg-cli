@@ -16,7 +16,10 @@ def step_impl_game_initialized(context):
 
     if not hasattr(context, "repl") or context.repl is None:
         state = StateFactory.create(context.base_dir)
-        context.repl = REPLEnvironment(context.base_dir, state)
+        from lib.presentation.console import MockConsole
+
+        context.console = MockConsole(inputs=[])
+        context.repl = REPLEnvironment(context.base_dir, state, context.console)
         context.repl.command_registry.register(VarCommand())
 
 
@@ -28,6 +31,12 @@ def step_impl_type_command(context, command):
     from io import StringIO
 
     from lib.presentation.lexer import Lexer
+
+    # Test hack: auto-confirm deletions
+    if hasattr(context, "console"):
+        parts = command.split()
+        if len(parts) >= 2 and parts[0] == "var" and parts[1] == "delete":
+            context.console.inputs.append("y")
 
     lexer = Lexer(command)
 
