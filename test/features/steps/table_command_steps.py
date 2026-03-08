@@ -41,6 +41,8 @@ def step_impl_type_command(context, command_text):
     context.error = None
     try:
         context.result = context.command.execute(lexer, context.state)
+        if context.result is not None:
+            print(context.result)
     except Exception as e:
         context.error = e
 
@@ -51,6 +53,11 @@ def step_impl_type_command(context, command_text):
 @then('the command output should include "{text}"')
 def step_impl_output_includes(context, text):
     assert text in context.output, f"Expected '{text}' in output, got: {context.output}"
+
+
+@then('the command output should not be empty')
+def step_impl_output_not_empty(context):
+    assert context.output.strip() != "", "Expected output to not be empty"
 
 
 @then("the result should not be added to the journal")

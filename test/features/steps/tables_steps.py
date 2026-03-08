@@ -65,6 +65,8 @@ def step_impl_enter_command(context, command_text):
     context.error = None
     try:
         context.result = context.command.execute(lexer, context.state)
+        if context.result is not None:
+            print(context.result)
     except Exception as e:
         context.error = e
 

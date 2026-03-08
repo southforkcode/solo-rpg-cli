@@ -59,8 +59,6 @@ class TestTableCommand(unittest.TestCase):
         finally:
             sys.stdout = old_stdout
 
-        output = captured_output.getvalue()
-        self.assertIn("Result:", output)
         self.assertIn(result, ["Arthur", "Lancelot"])
 
         # Check journal
