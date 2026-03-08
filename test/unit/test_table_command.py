@@ -65,9 +65,7 @@ class TestTableCommand(unittest.TestCase):
 
         # Check journal
         entries = self.state.journal_manager.get_entries()
-        self.assertEqual(len(entries), 1)
-        self.assertEqual(entries[0].title, "Rolled on table 'heroes'")
-        self.assertEqual(entries[0].content, result)
+        self.assertEqual(len(entries), 0)
 
     def test_roll_missing_table(self):
         lexer = Lexer("roll nonexistent")

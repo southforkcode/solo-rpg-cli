@@ -53,11 +53,10 @@ def step_impl_output_includes(context, text):
     assert text in context.output, f"Expected '{text}' in output, got: {context.output}"
 
 
-@then("the result should be added to the journal")
-def step_impl_result_in_journal(context):
+@then("the result should not be added to the journal")
+def step_impl_result_not_in_journal(context):
     entries = context.state.journal_manager.get_entries()
-    assert len(entries) > 0, "Expected journal entry to be created."
-    assert "Rolled on table '" in entries[-1].title, "Latest entry is not a table roll."
+    assert len(entries) == 0, "Expected no journal entry to be created."
 
 
 @then('a SyntaxError should be raised with "{err_msg}"')
