@@ -19,6 +19,13 @@ class Command:
     def help(self) -> None:
         raise NotImplementedError
 
+    def get_completions(self, text_before_cursor: str, state: State) -> list[str]:
+        """
+        Return a list of autocomplete suggestions based on the current input text.
+        By default, returns an empty list. Commands can override this.
+        """
+        return []
+
 
 class CommandRegistry:
     def __init__(self):

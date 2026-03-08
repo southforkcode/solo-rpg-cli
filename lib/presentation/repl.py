@@ -207,18 +207,29 @@ class REPLEnvironment:
         self.state.set("gamedir", gamedir)
         self.history = History()
         self.command_registry = CommandRegistry()
+        
+        from lib.presentation.completer import REPLCompleter
+        self.completer = REPLCompleter(self.command_registry, self.state)
+        
         self.pretty_printer_registry = PrettyPrinterRegistry()
         self.console: Console
         if console is None:
             from lib.presentation.console import DefaultConsole
 
-            self.console = DefaultConsole(gamedir)
+            self.console = DefaultConsole(gamedir, self.completer)
         else:
             self.console = console
         self.state.set("console", self.console)
         self.executor = CommandExecutor(self)
         self._quit_requested = False
         self._save_result = True
+
+    def _get_prompt(self) -> str:
+        campaign_name = self.gamedir.name.replace("_", " ").title()
+        journeys = self.state.journey_manager.list_journeys(state_filter="active")
+        if journeys:
+            return f"[{campaign_name} - {journeys[0].title}] > "
+        return f"[{campaign_name}] > "
 
     def run(self):
         self.command_registry.register(_HelpCommand(self))
@@ -236,7 +247,7 @@ class REPLEnvironment:
         while True:
             self._save_result = True
             try:
-                text = self.console.read()
+                text = self.console.read(prompt_str=self._get_prompt())
                 lexer = Lexer(text)
                 result = self.executor.execute(lexer)
                 if self._save_result and result is not None:

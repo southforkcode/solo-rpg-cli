@@ -17,6 +17,44 @@ class TableCommand(Command):
         self.aliases = ["tables"]
         self.description = "Roll on random tables or list them"
 
+    def get_completions(self, text_before_cursor: str, state: State) -> list[str]:
+        """Return a list of autocomplete suggestions."""
+        words = text_before_cursor.split()
+        if not words:
+            return []
+            
+        is_new_word = text_before_cursor.endswith(' ')
+        verbs = ["list", "roll"]
+        
+        if len(words) == 1 and not is_new_word:
+            return []
+            
+        if len(words) == 1 and is_new_word:
+            return verbs
+            
+        if len(words) == 2 and not is_new_word:
+            prefix = words[1].lower()
+            return [v for v in verbs if v.startswith(prefix)]
+            
+        verb = words[1].lower()
+        if verb == "roll":
+            manager = getattr(state, "table_manager", None)
+            tables = manager.list_tables() if manager else []
+            tables = [f'"{t}"' if " " in t else t for t in tables]
+            
+            if len(words) == 2 and is_new_word:
+                return tables
+                
+            if len(words) == 3 and not is_new_word:
+                prefix = words[2].lower()
+                clean_prefix = prefix.strip('"\'')
+                return [
+                    t for t in tables 
+                    if t.strip('"\'').lower().startswith(clean_prefix)
+                ]
+                
+        return []
+
     def execute(self, lexer: Lexer, state: State) -> object:
         """Execute the table command with the given argument state."""
         subcommand = lexer.next()

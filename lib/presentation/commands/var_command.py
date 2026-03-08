@@ -14,6 +14,39 @@ class VarCommand(Command):
         self.aliases = ["variables", "v"]
         self.description = "Manage game variables"
 
+    def get_completions(self, text_before_cursor: str, state: State) -> list[str]:
+        """Return a list of autocomplete suggestions."""
+        words = text_before_cursor.split()
+        if not words:
+            return []
+            
+        is_new_word = text_before_cursor.endswith(' ')
+        verbs = ["set", "update", "get", "list", "delete"]
+        
+        if len(words) == 1 and not is_new_word:
+            return []
+            
+        if len(words) == 1 and is_new_word:
+            return verbs
+            
+        if len(words) == 2 and not is_new_word:
+            prefix = words[1].lower()
+            return [v for v in verbs if v.startswith(prefix)]
+            
+        verb = words[1].lower()
+        if verb in ["set", "update", "get", "delete"]:
+            vars_dict = state.variable_manager.get_all()
+            var_names = list(vars_dict.keys())
+            
+            if len(words) == 2 and is_new_word:
+                return var_names
+                
+            if len(words) == 3 and not is_new_word:
+                prefix = words[2].lower()
+                return [n for n in var_names if n.lower().startswith(prefix)]
+                
+        return []
+
     def execute(self, lexer: Lexer, state: State) -> object:
         subcmd = lexer.next()
         if not subcmd:
