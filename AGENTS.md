@@ -33,6 +33,7 @@
 - When creating new test cases for bugs, reference the issue id in the test case name. Add comment to test case with link to issue.
 - For features, create a new branch. Add one or more test cases for the feature. Make sure the test succeeds.
 - **Code without an accompanying unit test and feature test will be rejected.**
+- Update documentation.
 
 ## Issue Analysis
 
@@ -56,6 +57,7 @@
 - Use `uv` for package management
 - Write unit tests for all new code (Enforced; 80%+ coverage floor required)
 - Write feature tests for all new requirements
+- Documentation should be updated as necessary as part of code updates.
 - Use docstrings for all new code
 - Use strict type hints for all new code. **Banned from using `Any` type hints.**
 - Implement Dependency Injection instead of hardcoding instances.
@@ -79,10 +81,11 @@
 - Review all PRs for testability
 - Review all PRs for reusability
 - Review all PRs for extensibility
+- Review all PRs for documentation updates
 
 ## Documentation
 
-- Keep documentation up to date
+- Keep documentation up to date. New features should include documentation updates.
 - `AGENTS.md` - Keep this file up to date with agentic instructions
 - `README.md` - Keep this file up to date with project information
 - `doc\user_guide.md` - Keep this file up to date with information for the user
