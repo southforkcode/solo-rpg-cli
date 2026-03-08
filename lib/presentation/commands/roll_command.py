@@ -1,4 +1,3 @@
-from typing import Any
 
 from lib.core.dice_roller import DiceRerollType, DiceRoller
 from lib.core.state import State

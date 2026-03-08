@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, List
+from typing import List
 
 from lib.core.journal import JournalEntry
 from lib.core.journey import Journey

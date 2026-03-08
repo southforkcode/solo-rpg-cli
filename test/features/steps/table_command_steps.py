@@ -3,7 +3,7 @@ from pathlib import Path
 
 from behave import given, then, when
 
-from lib.core.state import State
+from lib.core.state import StateFactory
 from lib.presentation.commands.table_command import TableCommand
 from lib.presentation.lexer import Lexer
 
@@ -12,7 +12,7 @@ from lib.presentation.lexer import Lexer
 def step_impl_setup_tables(context):
     context.temp_dir = tempfile.mkdtemp()
     context.base_dir = Path(context.temp_dir)
-    context.state = State(context.base_dir)
+    context.state = StateFactory.create(context.base_dir)
 
     tables_dir = context.base_dir / "tables"
     tables_dir.mkdir()

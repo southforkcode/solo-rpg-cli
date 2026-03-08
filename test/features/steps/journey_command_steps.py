@@ -4,7 +4,7 @@ from pathlib import Path
 from behave import given, then, when
 
 import lib.presentation.commands.journey_command as journey_command_module
-from lib.core.state import State
+from lib.core.state import StateFactory
 from lib.presentation.commands.journey_command import JourneyCommand
 from lib.presentation.lexer import Lexer
 
@@ -13,7 +13,7 @@ from lib.presentation.lexer import Lexer
 def step_impl_new_journey_session(context):
     context.temp_dir = tempfile.mkdtemp()
     context.gamedir = Path(context.temp_dir)
-    context.state = State(base_dir=context.gamedir)
+    context.state = StateFactory.create(base_dir=context.gamedir)
     context.state.set("gamedir", context.gamedir)
     context.command = JourneyCommand()
     context.result = None

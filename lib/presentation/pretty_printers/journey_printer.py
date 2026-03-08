@@ -1,4 +1,3 @@
-from typing import Any, List
 
 from lib.core.journey import Journey
 from lib.presentation.pretty import PrettyPrinter

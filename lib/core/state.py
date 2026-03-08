@@ -9,13 +9,21 @@ from lib.core.variable import VariableManager
 
 
 class State:
-    def __init__(self, base_dir: Path):
+    def __init__(
+        self,
+        base_dir: Path,
+        journal_manager: JournalManager,
+        journey_manager: JourneyManager,
+        macro_manager: MacroManager,
+        table_manager: TableManager,
+        variable_manager: VariableManager,
+    ):
         self.base_dir = base_dir
-        self.journal_manager = JournalManager(base_dir)
-        self.journey_manager = JourneyManager(base_dir)
-        self.macro_manager = MacroManager(base_dir)
-        self.table_manager = TableManager(base_dir)
-        self.variable_manager = VariableManager(base_dir)
+        self.journal_manager = journal_manager
+        self.journey_manager = journey_manager
+        self.macro_manager = macro_manager
+        self.table_manager = table_manager
+        self.variable_manager = variable_manager
         self.state: dict[str, Any] = {}
         self.dirty = False
 
@@ -38,3 +46,16 @@ class State:
 
     def set_dirty(self, dirty: bool) -> None:
         self.dirty = dirty
+
+
+class StateFactory:
+    @staticmethod
+    def create(base_dir: Path) -> State:
+        return State(
+            base_dir=base_dir,
+            journal_manager=JournalManager(base_dir),
+            journey_manager=JourneyManager(base_dir),
+            macro_manager=MacroManager(base_dir),
+            table_manager=TableManager(base_dir),
+            variable_manager=VariableManager(base_dir),
+        )

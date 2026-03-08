@@ -7,13 +7,15 @@ from behave import given, then, when
 
 from lib.presentation.lexer import Lexer
 from lib.presentation.repl import REPLEnvironment
+from lib.core.state import StateFactory
 
 
 @given("a new macro testing session")
 def step_impl_new_macro_session(context):
     context.temp_dir = tempfile.mkdtemp()
     context.gamedir = Path(context.temp_dir)
-    context.repl = REPLEnvironment(context.gamedir)
+    state = StateFactory.create(context.gamedir)
+    context.repl = REPLEnvironment(context.gamedir, state)
     context.captured_output = ""
 
 
@@ -38,7 +40,7 @@ def step_impl_run_macro(context, macro_cmd):
     sys.stdout = my_stdout = StringIO()
 
     try:
-        context.result = context.repl.execute(lexer)
+        context.result = context.repl.executor.execute(lexer)
     finally:
         sys.stdout = old_stdout
 
