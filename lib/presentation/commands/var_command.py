@@ -1,3 +1,5 @@
+from rich.console import Console
+
 from lib.core.state import State
 from lib.presentation.command import Command
 from lib.presentation.lexer import Lexer
@@ -131,11 +133,27 @@ class VarCommand(Command):
             return f"Variable '{name}' not found."
 
     def help(self):
-        print("var [subcommand] [args...]")
-        print("Manage game variables.")
-        print("Subcommands:")
-        print("  set <name> <value>       - Create or update a variable")
-        print("  update <name> <change>   - Add change to a numeric variable")
-        print("  get <name>               - Print a specific variable")
-        print("  list                     - List all variables")
-        print("  delete <name>            - Delete a variable")
+        console = Console()
+        console.print(
+            "[bold cyan]var[/bold cyan] \\[[italic]subcommand[/italic]] "
+            "\\[[italic]args...[/italic]]"
+        )
+        console.print("Manage game variables.")
+        console.print("Subcommands:")
+        console.print(
+            "  [bold]set[/bold] [italic]<name>[/italic] [italic]<value>[/italic]"
+            "       - Create or update a variable"
+        )
+        console.print(
+            "  [bold]update[/bold] [italic]<name>[/italic] [italic]<change>[/italic]"
+            "   - Add change to a numeric variable"
+        )
+        console.print(
+            "  [bold]get[/bold] [italic]<name>[/italic]               "
+            "- Print a specific variable"
+        )
+        console.print("  [bold]list[/bold]                     - List all variables")
+        console.print(
+            "  [bold]delete[/bold] [italic]<name>[/italic]            "
+            "- Delete a variable"
+        )

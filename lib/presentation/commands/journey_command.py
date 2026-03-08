@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Any
 
 import prompt_toolkit
+from rich.console import Console
 
 from lib.core.journal import JournalEntry
 from lib.core.journey import Journey
@@ -252,11 +253,37 @@ class JourneyCommand(Command):
 
     def help(self):
         """Print help information for the journey command."""
-        print("journey start <title> - Start a new journey")
-        print("journey list [-active|-paused|-completed|-all] - List journeys")
-        print("journey progress <identifier> - Progress a journey")
-        print("journey pause <identifier> - Pause a journey")
-        print("journey resume <identifier> - Resume a paused journey")
-        print("journey complete <identifier> - Complete a journey")
-        print("journey stop <identifier> - Stop a journey indefinitely")
-        print("journey remove <identifier> - Remove a journey")
+        console = Console()
+        console.print(
+            "[bold cyan]journey[/bold cyan] [bold]start[/bold] "
+            "[italic]<title>[/italic] - Start a new journey"
+        )
+        console.print(
+            "  [bold cyan]journey[/bold cyan] [bold]list[/bold] "
+            "\\[[bold]-active[/bold]|[bold]-paused[/bold]|[bold]-completed[/bold]|"
+            "[bold]-all[/bold]] - List journeys"
+        )
+        console.print(
+            "  [bold cyan]journey[/bold cyan] [bold]progress[/bold] "
+            "[italic]<identifier>[/italic] - Progress a journey"
+        )
+        console.print(
+            "  [bold cyan]journey[/bold cyan] [bold]pause[/bold] "
+            "[italic]<identifier>[/italic] - Pause a journey"
+        )
+        console.print(
+            "  [bold cyan]journey[/bold cyan] [bold]resume[/bold] "
+            "[italic]<identifier>[/italic] - Resume a paused journey"
+        )
+        console.print(
+            "  [bold cyan]journey[/bold cyan] [bold]complete[/bold] "
+            "[italic]<identifier>[/italic] - Complete a journey"
+        )
+        console.print(
+            "  [bold cyan]journey[/bold cyan] [bold]stop[/bold] "
+            "[italic]<identifier>[/italic] - Stop a journey indefinitely"
+        )
+        console.print(
+            "  [bold cyan]journey[/bold cyan] [bold]remove[/bold] "
+            "[italic]<identifier>[/italic] - Remove a journey"
+        )

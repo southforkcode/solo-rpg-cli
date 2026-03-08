@@ -1,3 +1,5 @@
+from rich.console import Console
+
 from lib.core.state import State
 from lib.presentation.command import Command
 from lib.presentation.lexer import Lexer
@@ -63,6 +65,10 @@ class MacroCommand(Command):
 
     def help(self) -> None:
         """Display help documentation for the macro command."""
-        print("macro [list|reload] - Manage macros")
-        print("  list - List all macros")
-        print("  reload - Reload macros from disk")
+        console = Console()
+        console.print(
+            "[bold cyan]macro[/bold cyan] \\[[bold]list[/bold]|[bold]reload[/bold]] "
+            "- Manage macros"
+        )
+        console.print("  [bold]list[/bold] - List all macros")
+        console.print("  [bold]reload[/bold] - Reload macros from disk")

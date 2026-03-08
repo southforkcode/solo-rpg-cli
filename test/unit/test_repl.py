@@ -23,6 +23,7 @@ class DummyCommand:
 class TestREPLEnvironment(unittest.TestCase):
     def setUp(self):
         self.gamedir = Path("test_gamedir")
+        self.gamedir.mkdir(parents=True, exist_ok=True)
         # Ensure state provides necessary managers
         from lib.core.journal import JournalManager
         from lib.core.journey import JourneyManager
@@ -39,6 +40,12 @@ class TestREPLEnvironment(unittest.TestCase):
             variable_manager=VariableManager(self.gamedir),
         )
 
+    def tearDown(self):
+        import shutil
+
+        if self.gamedir.exists():
+            shutil.rmtree(self.gamedir)
+
     def test_exit_command(self):
         console = MockConsole(["exit"])
         repl = REPLEnvironment(self.gamedir, self.state, console=console)
@@ -54,7 +61,7 @@ class TestREPLEnvironment(unittest.TestCase):
         repl = REPLEnvironment(self.gamedir, self.state, console=console)
         repl.run()
         outputs_str = mock_stdout.getvalue() + " ".join(str(o) for o in console.outputs)
-        self.assertIn("help - Show help for a command", outputs_str)
+        self.assertIn("Show help for a command", outputs_str)
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_unknown_command(self, mock_stdout):

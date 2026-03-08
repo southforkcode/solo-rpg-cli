@@ -1,5 +1,7 @@
 import time
 
+from rich.console import Console
+
 from lib.core.state import State
 from lib.presentation.command import Command
 from lib.presentation.lexer import Lexer
@@ -78,6 +80,13 @@ class TableCommand(Command):
 
     def help(self) -> None:
         """Display help documentation for the table command."""
-        print("table [list|roll <table_name>] - Interact with random tables")
-        print("  list - List all available tables")
-        print("  roll <table_name> - Roll a random item from the given table")
+        console = Console()
+        console.print(
+            "[bold cyan]table[/bold cyan] \\[[bold]list[/bold]|[bold]roll[/bold] "
+            "[italic]<table_name>[/italic]] - Interact with random tables"
+        )
+        console.print("  [bold]list[/bold] - List all available tables")
+        console.print(
+            "  [bold]roll[/bold] [italic]<table_name>[/italic] - Roll a random "
+            "item from the given table"
+        )

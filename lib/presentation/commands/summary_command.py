@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import List
 
+from rich.console import Console
+
 from lib.core.journal import JournalEntry
 from lib.core.journey import Journey
 from lib.core.state import State
@@ -33,7 +35,9 @@ class SummaryCommand(Command):
         return GameSummary(journeys=journeys, journals=journals)
 
     def help(self):
-        print(
-            "summary|s - Summarize the current state of the game "
+        console = Console()
+        console.print(
+            "[bold cyan]summary[/bold cyan]|[bold cyan]s[/bold cyan] - Summarize "
+            "the current state of the game "
             "(last 5 journal entries and active journeys)"
         )

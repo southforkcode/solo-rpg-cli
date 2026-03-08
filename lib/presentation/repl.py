@@ -39,7 +39,10 @@ class _HelpCommand(Command):
 
     def help(self) -> None:
         """Print the help documentation for the help command itself."""
-        self.repl.console.print("help [command] - Show help for a command")
+        self.repl.console.print(
+            "[bold cyan]help[/bold cyan] \\[[italic]command[/italic]] "
+            "- Show help for a command"
+        )
 
 
 class _ExitCommand(Command):
@@ -59,7 +62,10 @@ class _ExitCommand(Command):
 
     def help(self) -> None:
         """Print the help documentation for the exit command."""
-        self.repl.console.print("exit|quit|bye - Exit the REPL")
+        self.repl.console.print(
+            "[bold cyan]exit[/bold cyan]|[bold cyan]quit[/bold cyan]|"
+            "[bold cyan]bye[/bold cyan] - Exit the REPL"
+        )
 
 
 class _LastCommand(Command):
@@ -83,7 +89,10 @@ class _LastCommand(Command):
 
     def help(self) -> None:
         """Print the help documentation for the last command."""
-        self.repl.console.print("last [offset] - Get the result of the last command")
+        self.repl.console.print(
+            "[bold cyan]last[/bold cyan] \\[[italic]offset[/italic]] "
+            "- Get the result of the last command"
+        )
 
 
 class CommandExecutor:

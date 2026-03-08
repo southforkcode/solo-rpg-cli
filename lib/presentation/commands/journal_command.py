@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Any
 
 import prompt_toolkit
+from rich.console import Console
 
 from lib.core.journal import JournalEntry
 from lib.core.state import State
@@ -108,9 +109,17 @@ class JournalCommand(Command):
 
     def help(self):
         """Print exactly how to use the journal command."""
-        print("journal|j add [title] - adds a journal entry with optional title")
-        print("journal|j list [top] - lists journal entries optionally up to the last")
-        print(
-            "journal|j delete|del <identifier> - "
+        console = Console()
+        console.print(
+            "[bold cyan]journal[/bold cyan]|[bold cyan]j[/bold cyan] [bold]add[/bold] "
+            "\\[[italic]title[/italic]] - adds a journal entry with optional title"
+        )
+        console.print(
+            "[bold cyan]journal[/bold cyan]|[bold cyan]j[/bold cyan] [bold]list[/bold] "
+            "\\[[italic]top[/italic]] - lists journal entries optionally up to the last"
+        )
+        console.print(
+            "[bold cyan]journal[/bold cyan]|[bold cyan]j[/bold cyan] "
+            "[bold]delete[/bold]|[bold]del[/bold] [italic]<identifier>[/italic] - "
             "deletes journal entry by identifier (index or title)"
         )

@@ -1,3 +1,5 @@
+from rich.console import Console
+
 from lib.core.dice_roller import DiceRerollType, DiceRoller
 from lib.core.state import State
 from lib.presentation.command import Command
@@ -49,11 +51,20 @@ class RollCommand(Command):
         return result
 
     def help(self) -> None:
-        print("roll <dice> [adv|dis] [modifier] - Roll dice")
-        print("  <dice> - Number of dice to roll (e.g. 3d6, d20)")
-        print("  [adv|dis] - Advantage or disadvantage")
-        print("  [modifier] - Modifier to add to the roll (e.g. +4, -2)")
-        print("Examples:")
-        print("    roll 3d6")
-        print("    roll d20 adv")
-        print("    roll 2d6 + 4")
+        console = Console()
+        console.print(
+            "[bold cyan]roll[/bold cyan] [italic]<dice>[/italic] "
+            "\\[[bold]adv[/bold]|[bold]dis[/bold]] \\[[italic]modifier[/italic]] "
+            "- Roll dice"
+        )
+        console.print(
+            "  [italic]<dice>[/italic] - Number of dice to roll (e.g. 3d6, d20)"
+        )
+        console.print("  [bold]adv[/bold]|[bold]dis[/bold] - Advantage or disadvantage")
+        console.print(
+            "  [italic]modifier[/italic] - Modifier to add to the roll (e.g. +4, -2)"
+        )
+        console.print("Examples:")
+        console.print("    roll 3d6")
+        console.print("    roll d20 adv")
+        console.print("    roll 2d6 + 4")

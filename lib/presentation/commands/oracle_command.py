@@ -1,6 +1,8 @@
 import json
 import random
 
+from rich.console import Console
+
 from lib.core.state import State
 from lib.presentation.command import Command
 from lib.presentation.lexer import Lexer
@@ -118,17 +120,22 @@ class OracleCommand(Command):
         return output
 
     def help(self) -> None:
-        print(
-            'oracle ["Question"] [--odds <likelihood>] - '
-            "Ask the oracle a yes/no question"
+        console = Console()
+        console.print(
+            '[bold cyan]oracle[/bold cyan] \\[[italic]"Question"[/italic]] '
+            "\\[[bold]--odds[/bold] [italic]<likelihood>[/italic]] - Ask the "
+            "oracle a yes/no question"
         )
-        print('  ["Question"] - Optional question to ask')
-        print("  [--odds <likelihood>] - Optional probability of a Yes answer.")
-        print(
+        console.print('  [italic]"Question"[/italic] - Optional question to ask')
+        console.print(
+            "  [bold]--odds[/bold] [italic]<likelihood>[/italic] - Optional "
+            "probability of a Yes answer."
+        )
+        console.print(
             "                          Defaults to 50/50. Common options: "
             "certain, likely, 50/50, unlikely, impossible."
         )
-        print("Examples:")
-        print('    oracle "Are there guards?" --odds likely')
-        print('    oracle "Is the chest locked?"')
-        print("    o --odds certain")
+        console.print("Examples:")
+        console.print('    oracle "Are there guards?" --odds likely')
+        console.print('    oracle "Is the chest locked?"')
+        console.print("    o --odds certain")
