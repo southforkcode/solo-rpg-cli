@@ -62,7 +62,10 @@ if __name__ == "__main__":
         variable_manager=var_mgr,
     )
 
-    repl = REPLEnvironment(gamedir_path, state)
+    from lib.presentation.console import DefaultConsole
+    
+    console = DefaultConsole(gamedir_path)
+    repl = REPLEnvironment(gamedir_path, state, console=console)
     
     repl.command_registry.register(JournalCommand())
     repl.command_registry.register(JourneyCommand())

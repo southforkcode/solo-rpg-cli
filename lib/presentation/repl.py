@@ -9,6 +9,7 @@ from lib.core.macro import MacroEvaluator
 from lib.core.state import State
 from lib.infrastructure.history import History
 from lib.presentation.command import Command, CommandRegistry
+from lib.presentation.console import Console
 from lib.presentation.lexer import Lexer
 from lib.presentation.pretty import PrettyPrinterRegistry
 
@@ -31,7 +32,7 @@ class _HelpCommand(Command):
             return None
         command = self.repl.command_registry.lookup_command(command_name)
         if command is None:
-            print(f"Command '{command_name}' not found")
+            self.repl.console.print(f"Command '{command_name}' not found")
             self.repl.command_registry.help()
             return None
         command.help()
@@ -39,7 +40,7 @@ class _HelpCommand(Command):
 
     def help(self) -> None:
         """Print the help documentation for the help command itself."""
-        print("help [command] - Show help for a command")
+        self.repl.console.print("help [command] - Show help for a command")
 
 
 class _ExitCommand(Command):
@@ -59,7 +60,7 @@ class _ExitCommand(Command):
 
     def help(self) -> None:
         """Print the help documentation for the exit command."""
-        print("exit|quit|bye - Exit the REPL")
+        self.repl.console.print("exit|quit|bye - Exit the REPL")
 
 
 class _LastCommand(Command):
@@ -83,31 +84,10 @@ class _LastCommand(Command):
 
     def help(self) -> None:
         """Print the help documentation for the last command."""
-        print("last [offset] - Get the result of the last command")
+        self.repl.console.print("last [offset] - Get the result of the last command")
 
 
-class InputReader:
-    def __init__(self, gamedir: Path):
-        self.gamedir = gamedir
-        self._session: PromptSession | None = None
 
-    @property
-    def session(self) -> PromptSession:
-        if self._session is None:
-            self._session = PromptSession(
-                history=FileHistory(str(self.gamedir / "history"))
-            )
-        return self._session
-
-    def read(self) -> str:
-        import sys
-        if not sys.stdin.isatty() or not sys.stdout.isatty():
-            print("> ", end="", flush=True)
-            line = sys.stdin.readline()
-            if not line:
-                raise EOFError()
-            return line.rstrip("\n")
-        return self.session.prompt("> ")
 
 
 class CommandExecutor:
@@ -124,7 +104,11 @@ class CommandExecutor:
             macro_name = cmd[2:] if is_journal else cmd[1:]
 
             if not macro_name and is_journal:
-                last_result = self.repl.history.get(0)
+                try:
+                    last_result = self.repl.history.get(0)
+                except IndexError:
+                    last_result = None
+
                 if last_result is not None:
                     from lib.core.journal import JournalEntry
                     self.repl.state.journal_manager.add_entry(
@@ -134,14 +118,14 @@ class CommandExecutor:
                             timestamp=time.time(),
                         )
                     )
-                    print("Added last result to journal.")
+                    self.repl.console.print("Added last result to journal.")
                 else:
-                    print("No previous valid result to journal.")
+                    self.repl.console.print("No previous valid result to journal.")
                 return None
 
             macro = self.repl.state.macro_manager.get_macro(macro_name)
             if macro is None:
-                print(f"Macro '{macro_name}' not found.")
+                self.repl.console.print(f"Macro '{macro_name}' not found.")
                 return None
 
             args = []
@@ -171,7 +155,7 @@ class CommandExecutor:
             try:
                 ret = evaluator.run()
             except Exception as e:
-                print(f"Macro execution failed: {e}")
+                self.repl.console.print(f"Macro execution failed: {e}")
                 return None
 
             if is_journal:
@@ -187,32 +171,36 @@ class CommandExecutor:
                             timestamp=time.time(),
                         )
                     )
-                    print("Added macro output to journal.")
+                    self.repl.console.print("Added macro output to journal.")
 
             return ret
 
         command = self.repl.command_registry.lookup_command(cmd)
         if command is None:
-            print(f"Command '{cmd}' not found")
+            self.repl.console.print(f"Command '{cmd}' not found")
             return None
         try:
             result = command.execute(lexer, self.repl.state)
         except SyntaxError as e:
-            print(e)
+            self.repl.console.print(str(e))
             command.help()
             return None
         return result
 
 
 class REPLEnvironment:
-    def __init__(self, gamedir: Path, state: State):
+    def __init__(self, gamedir: Path, state: State, console: Console | None = None):
         self.gamedir = gamedir
         self.state = state
         self.state.set("gamedir", gamedir)
         self.history = History()
         self.command_registry = CommandRegistry()
         self.pretty_printer_registry = PrettyPrinterRegistry()
-        self.input_reader = InputReader(gamedir)
+        if console is None:
+            from lib.presentation.console import DefaultConsole
+            self.console = DefaultConsole(gamedir)
+        else:
+            self.console = console
         self.executor = CommandExecutor(self)
         self._quit_requested = False
         self._save_result = True
@@ -225,7 +213,7 @@ class REPLEnvironment:
         while True:
             self._save_result = True
             try:
-                text = self.input_reader.read()
+                text = self.console.read()
                 lexer = Lexer(text)
                 result = self.executor.execute(lexer)
                 if self._save_result and result is not None:
@@ -239,7 +227,7 @@ class REPLEnvironment:
             except EOFError:
                 self._quit_requested = True
             except Exception as e:
-                print(f"Error: {e}")
+                self.console.print(f"Error: {e}")
                 traceback.print_exc()
                 continue
             if self._quit_requested:
