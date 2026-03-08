@@ -99,9 +99,6 @@ class TableCommand(Command):
             print(f"Table '{table_name}' not found or is empty.")
             return None
 
-        print(f"Result: {result}")
-
-
         return result
 
     def help(self) -> None:

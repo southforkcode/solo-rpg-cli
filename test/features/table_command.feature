@@ -18,7 +18,7 @@ Feature: Table Command
       | filename       | content       |
       | npc_names.txt  | Elara         |
     When I execute table command "table roll npc_names"
-    Then the command output should include "Result: Elara"
+    Then the command output should include "Elara"
     And the result should not be added to the journal
 
   Scenario: Rolling on a CSV table
@@ -26,7 +26,7 @@ Feature: Table Command
       | filename       | content       |
       | loot.csv       | Gold\nPotion  |
     When I execute table command "table roll loot"
-    Then the command output should include "Result:"
+    Then the command output should not be empty
     And the result should not be added to the journal
 
   Scenario: Rolling on a non-existent table
