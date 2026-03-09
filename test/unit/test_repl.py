@@ -31,12 +31,14 @@ class TestREPLEnvironment(unittest.TestCase):
         from lib.core.settings import SettingsManager
         from lib.core.table import TableManager
         from lib.core.variable import VariableManager
+        from unittest.mock import MagicMock
 
         self.state = State(
             base_dir=self.gamedir,
             journal_manager=JournalManager(self.gamedir),
             journey_manager=JourneyManager(self.gamedir),
             macro_manager=MacroManager(self.gamedir),
+            music_manager=MagicMock(),
             settings_manager=SettingsManager(self.gamedir),
             table_manager=TableManager(self.gamedir, SettingsManager(self.gamedir)),
             variable_manager=VariableManager(self.gamedir),
