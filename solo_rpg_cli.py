@@ -39,9 +39,11 @@ if __name__ == "__main__":
     from lib.core.state import State
     from lib.core.table import TableManager
     from lib.core.variable import VariableManager
+    from lib.infrastructure.music_player import PygameMusicPlayer
     from lib.presentation.commands.journal_command import JournalCommand
     from lib.presentation.commands.journey_command import JourneyCommand
     from lib.presentation.commands.macro_command import MacroCommand
+    from lib.presentation.commands.music_command import MusicCommand
     from lib.presentation.commands.oracle_command import OracleCommand
     from lib.presentation.commands.roll_command import RollCommand
     from lib.presentation.commands.summary_command import SummaryCommand
@@ -51,6 +53,7 @@ if __name__ == "__main__":
     journal_mgr = JournalManager(gamedir_path)
     journey_mgr = JourneyManager(gamedir_path)
     macro_mgr = MacroManager(gamedir_path)
+    music_mgr = PygameMusicPlayer(gamedir_path)
     settings_mgr = SettingsManager(gamedir_path)
     table_mgr = TableManager(gamedir_path, settings_mgr)
     var_mgr = VariableManager(gamedir_path)
@@ -60,6 +63,7 @@ if __name__ == "__main__":
         journal_manager=journal_mgr,
         journey_manager=journey_mgr,
         macro_manager=macro_mgr,
+        music_manager=music_mgr,
         settings_manager=settings_mgr,
         table_manager=table_mgr,
         variable_manager=var_mgr,
@@ -70,6 +74,7 @@ if __name__ == "__main__":
     repl.command_registry.register(JournalCommand())
     repl.command_registry.register(JourneyCommand())
     repl.command_registry.register(MacroCommand())
+    repl.command_registry.register(MusicCommand())
     repl.command_registry.register(OracleCommand())
     repl.command_registry.register(RollCommand())
     repl.command_registry.register(SummaryCommand())

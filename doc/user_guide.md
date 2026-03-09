@@ -60,6 +60,30 @@ Manage macros within your game.
 - `macro list`: List all available macros (both global and local to the campaign).
 - `macro reload`: Reload macro definitions from disk, useful for testing changes to macro files without restarting the CLI.
 
+### `music` (alias: `m`)
+Manage non-blocking background music playback to enhance your game ambiance. The app supports `.mp3`, `.wav`, and `.ogg` files.
+
+- `music list`: List available playlists.
+- `music play [playlist]`: Start playing a specific playlist. If no playlist is provided, it will play audio files placed directly in the `<gamedir>/music/` folder.
+- `music stop`: Stop playback.
+- `music pause`: Pause playback.
+- `music resume`: Resume paused playback.
+- `music next` / `music skip`: Skip to the next track in the playlist.
+- `music vol [0-100]`: Check or set the playback volume (e.g., `m vol 50` for 50%).
+
+#### Playlist Configuration
+There are two ways to define playlists:
+1. **Directory Scanning**: Create folders inside `<gamedir>/music/` (e.g. `<gamedir>/music/ambient/`) and place your audio files directly inside. The folder name becomes the playlist.
+2. **Configuration File**: For more control, create a `<gamedir>/music.toml` file with a `[music.playlists]` block:
+   ```toml
+   [music.playlists.custom_mix]
+   tracks = [
+       "music/ambient/track1.mp3",
+       "music/combat/epic_fight.mp3"
+   ]
+   ```
+   *Note: Track paths in `music.toml` should be relative to your main `<gamedir>`.*
+
 ---
 
 ## Macros

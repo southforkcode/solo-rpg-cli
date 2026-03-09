@@ -25,6 +25,8 @@ class TestREPLEnvironment(unittest.TestCase):
         self.gamedir = Path("test_gamedir")
         self.gamedir.mkdir(parents=True, exist_ok=True)
         # Ensure state provides necessary managers
+        from unittest.mock import MagicMock
+
         from lib.core.journal import JournalManager
         from lib.core.journey import JourneyManager
         from lib.core.macro import MacroManager
@@ -37,6 +39,7 @@ class TestREPLEnvironment(unittest.TestCase):
             journal_manager=JournalManager(self.gamedir),
             journey_manager=JourneyManager(self.gamedir),
             macro_manager=MacroManager(self.gamedir),
+            music_manager=MagicMock(),
             settings_manager=SettingsManager(self.gamedir),
             table_manager=TableManager(self.gamedir, SettingsManager(self.gamedir)),
             variable_manager=VariableManager(self.gamedir),

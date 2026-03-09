@@ -54,6 +54,7 @@ Once in the REPL, you can run commands like:
 > journey start "Travel to Waterdeep"
 > roll 1d20 + 4
 > journal add "Met a mysterious stranger on the road."
+> m play ambient
 > summary
 > macro list
 ```

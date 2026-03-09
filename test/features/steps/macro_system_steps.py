@@ -2,9 +2,11 @@ import sys
 import tempfile
 from io import StringIO
 from pathlib import Path
+from unittest.mock import MagicMock
 
 from behave import given, then, when
 
+from lib.core.music import MusicPlayerProtocol
 from lib.core.state import StateFactory
 from lib.presentation.lexer import Lexer
 from lib.presentation.repl import REPLEnvironment
@@ -14,7 +16,7 @@ from lib.presentation.repl import REPLEnvironment
 def step_impl_new_macro_session(context):
     context.temp_dir = tempfile.mkdtemp()
     context.gamedir = Path(context.temp_dir)
-    state = StateFactory.create(context.gamedir)
+    state = StateFactory.create(context.gamedir, MagicMock(spec=MusicPlayerProtocol))
     context.repl = REPLEnvironment(context.gamedir, state)
     context.captured_output = ""
 

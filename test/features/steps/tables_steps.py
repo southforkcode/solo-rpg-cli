@@ -1,18 +1,22 @@
 import tempfile
 from pathlib import Path
+from unittest.mock import MagicMock
 
 from behave import given, then, when
 
+from lib.core.music import MusicPlayerProtocol
 from lib.core.state import StateFactory
 from lib.presentation.commands.table_command import TableCommand
 from lib.presentation.lexer import Lexer
 
 
-@given('a new campaign')
+@given("a new campaign")
 def step_impl_new_campaign(context):
     context.temp_dir = tempfile.mkdtemp()
     context.gamedir = Path(context.temp_dir)
-    context.state = StateFactory.create(context.gamedir)
+    context.state = StateFactory.create(
+        context.gamedir, MagicMock(spec=MusicPlayerProtocol)
+    )
     context.command = TableCommand()
 
 
@@ -25,9 +29,9 @@ def step_impl_create_external_table(context, table_name, items_csv, directory_na
     root_dir = context.gamedir.parent
     external_dir = root_dir / directory_name
     external_dir.mkdir(exist_ok=True)
-    
+
     file_path = external_dir / f"{table_name}.csv"
-    
+
     # Write items to CSV format
     lines = items_csv.split(",")
     content = "\\n".join(f"{item},1" for item in lines)
@@ -38,18 +42,19 @@ def step_impl_create_external_table(context, table_name, items_csv, directory_na
 def step_impl_configure_table_settings(context, alias, table_name):
     settings_dir = context.gamedir / "settings"
     settings_dir.mkdir(exist_ok=True)
-    
+
     settings_file = settings_dir / "game.toml"
-    
+
     toml_content = f"""
     [tables]
     {alias} = "../../borrowed/{table_name}.csv"
     """
     settings_file.write_text(toml_content)
-    
+
     # Reload settings/tables in the active state
     context.state.settings_manager.load_settings()
     context.state.table_manager.load_tables()
+
 
 @when('I enter a command "{command_text}"')
 def step_impl_enter_command(context, command_text):
@@ -72,11 +77,13 @@ def step_impl_enter_command(context, command_text):
 
     sys.stdout = old_stdout
     context.output = mystdout.getvalue()
-    
+
     # Exposing the console wrapper compatibility since we mock stdout directly
     if not hasattr(context, "console"):
+
         class MockConsole:
             outputs = [context.output]
+
         context.console = MockConsole()
 
 

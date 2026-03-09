@@ -3,7 +3,9 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import MagicMock
 
+from lib.core.music import MusicPlayerProtocol
 from lib.core.state import StateFactory
 from lib.presentation.commands.table_command import TableCommand
 from lib.presentation.lexer import Lexer
@@ -24,7 +26,9 @@ class TestTableCommand(unittest.TestCase):
             "Gold,100\nPotion,50", encoding="utf-8"
         )
 
-        self.state = StateFactory.create(self.base_dir)
+        self.state = StateFactory.create(
+            self.base_dir, MagicMock(spec=MusicPlayerProtocol)
+        )
         self.state.table_manager.load_tables()
         self.command = TableCommand()
 

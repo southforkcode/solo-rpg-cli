@@ -2,8 +2,9 @@ import json
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
+from lib.core.music import MusicPlayerProtocol
 from lib.core.state import StateFactory
 from lib.presentation.commands.oracle_command import OracleCommand
 from lib.presentation.lexer import Lexer
@@ -13,7 +14,10 @@ class TestOracleCommand(unittest.TestCase):
     def setUp(self):
         self.command = OracleCommand()
         self.temp_dir = TemporaryDirectory()
-        self.state = StateFactory.create(base_dir=Path(self.temp_dir.name))
+        self.state = StateFactory.create(
+            base_dir=Path(self.temp_dir.name),
+            music_manager=MagicMock(spec=MusicPlayerProtocol),
+        )
 
     def tearDown(self):
         self.temp_dir.cleanup()
