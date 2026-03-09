@@ -35,11 +35,11 @@ if __name__ == "__main__":
     from lib.core.journal import JournalManager
     from lib.core.journey import JourneyManager
     from lib.core.macro import MacroManager
-    from lib.core.music import MusicManager
     from lib.core.settings import SettingsManager
     from lib.core.state import State
     from lib.core.table import TableManager
     from lib.core.variable import VariableManager
+    from lib.infrastructure.music_player import PygameMusicPlayer
     from lib.presentation.commands.journal_command import JournalCommand
     from lib.presentation.commands.journey_command import JourneyCommand
     from lib.presentation.commands.macro_command import MacroCommand
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     journal_mgr = JournalManager(gamedir_path)
     journey_mgr = JourneyManager(gamedir_path)
     macro_mgr = MacroManager(gamedir_path)
-    music_mgr = MusicManager(gamedir_path)
+    music_mgr = PygameMusicPlayer(gamedir_path)
     settings_mgr = SettingsManager(gamedir_path)
     table_mgr = TableManager(gamedir_path, settings_mgr)
     var_mgr = VariableManager(gamedir_path)

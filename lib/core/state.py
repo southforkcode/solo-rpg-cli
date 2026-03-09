@@ -4,10 +4,10 @@ from typing import Any
 from lib.core.journal import JournalManager
 from lib.core.journey import JourneyManager
 from lib.core.macro import MacroManager
+from lib.core.music import MusicPlayerProtocol
 from lib.core.settings import SettingsManager
 from lib.core.table import TableManager
 from lib.core.variable import VariableManager
-from lib.core.music import MusicManager
 
 
 class State:
@@ -17,7 +17,7 @@ class State:
         journal_manager: JournalManager,
         journey_manager: JourneyManager,
         macro_manager: MacroManager,
-        music_manager: MusicManager,
+        music_manager: MusicPlayerProtocol,
         settings_manager: SettingsManager,
         table_manager: TableManager,
         variable_manager: VariableManager,
@@ -56,14 +56,14 @@ class State:
 
 class StateFactory:
     @staticmethod
-    def create(base_dir: Path) -> "State":
+    def create(base_dir: Path, music_manager: MusicPlayerProtocol) -> "State":
         settings_manager = SettingsManager(base_dir)
         return State(
             base_dir=base_dir,
             journal_manager=JournalManager(base_dir),
             journey_manager=JourneyManager(base_dir),
             macro_manager=MacroManager(base_dir),
-            music_manager=MusicManager(base_dir),
+            music_manager=music_manager,
             settings_manager=settings_manager,
             table_manager=TableManager(base_dir, settings_manager),
             variable_manager=VariableManager(base_dir),

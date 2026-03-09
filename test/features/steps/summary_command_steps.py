@@ -1,8 +1,10 @@
 import tempfile
 from pathlib import Path
+from unittest.mock import MagicMock
 
 from behave import given, then, when
 
+from lib.core.music import MusicPlayerProtocol
 from lib.core.state import StateFactory
 from lib.presentation.commands.summary_command import SummaryCommand
 from lib.presentation.lexer import Lexer
@@ -12,7 +14,9 @@ from lib.presentation.lexer import Lexer
 def step_impl_new_session(context):
     context.temp_dir = tempfile.mkdtemp()
     context.gamedir = Path(context.temp_dir)
-    context.state = StateFactory.create(base_dir=context.gamedir)
+    context.state = StateFactory.create(
+        base_dir=context.gamedir, music_manager=MagicMock(spec=MusicPlayerProtocol)
+    )
     context.state.set("gamedir", context.gamedir)
     context.command = SummaryCommand()
     context.result = None

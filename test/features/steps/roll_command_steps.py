@@ -1,8 +1,10 @@
 from pathlib import Path
+from unittest.mock import MagicMock
 
 from behave import then, when
 
 from lib.core.dice_roller import DiceRerollType
+from lib.core.music import MusicPlayerProtocol
 from lib.core.state import StateFactory
 from lib.presentation.commands.roll_command import RollCommand
 from lib.presentation.lexer import Lexer
@@ -11,7 +13,9 @@ from lib.presentation.lexer import Lexer
 @when('I execute the roll command with "{args}"')
 def step_impl_execute_roll(context, args):
     lexer = Lexer(args)
-    state = StateFactory.create(base_dir=Path("/tmp/dummy"))
+    state = StateFactory.create(
+        base_dir=Path("/tmp/dummy"), music_manager=MagicMock(spec=MusicPlayerProtocol)
+    )
     command = RollCommand()
     context.error = None
     context.result = None

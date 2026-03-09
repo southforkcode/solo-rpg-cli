@@ -1,8 +1,10 @@
 import tempfile
 from pathlib import Path
+from unittest.mock import MagicMock
 
 from behave import given, then, when
 
+from lib.core.music import MusicPlayerProtocol
 from lib.core.state import StateFactory
 from lib.presentation.commands.table_command import TableCommand
 from lib.presentation.lexer import Lexer
@@ -12,7 +14,9 @@ from lib.presentation.lexer import Lexer
 def step_impl_setup_tables(context):
     context.temp_dir = tempfile.mkdtemp()
     context.base_dir = Path(context.temp_dir)
-    context.state = StateFactory.create(context.base_dir)
+    context.state = StateFactory.create(
+        context.base_dir, MagicMock(spec=MusicPlayerProtocol)
+    )
 
     tables_dir = context.base_dir / "tables"
     tables_dir.mkdir()
@@ -55,7 +59,7 @@ def step_impl_output_includes(context, text):
     assert text in context.output, f"Expected '{text}' in output, got: {context.output}"
 
 
-@then('the command output should not be empty')
+@then("the command output should not be empty")
 def step_impl_output_not_empty(context):
     assert context.output.strip() != "", "Expected output to not be empty"
 

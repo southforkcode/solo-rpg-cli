@@ -1,8 +1,10 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest.mock import MagicMock
 
 from prompt_toolkit.input.defaults import create_pipe_input
 
+from lib.core.music import MusicPlayerProtocol
 from lib.core.state import StateFactory
 from lib.presentation.repl import REPLEnvironment
 
@@ -10,7 +12,7 @@ from lib.presentation.repl import REPLEnvironment
 def test_autocomplete_integration():
     with TemporaryDirectory() as tmp_dir:
         gamedir = Path(tmp_dir)
-        state = StateFactory.create(gamedir)
+        state = StateFactory.create(gamedir, MagicMock(spec=MusicPlayerProtocol))
         repl = REPLEnvironment(gamedir, state)
 
         from lib.presentation.commands.journey_command import JourneyCommand

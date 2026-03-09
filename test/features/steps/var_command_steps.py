@@ -1,8 +1,10 @@
 import tempfile
 from pathlib import Path
+from unittest.mock import MagicMock
 
 from behave import given, then, when
 
+from lib.core.music import MusicPlayerProtocol
 from lib.core.state import StateFactory
 from lib.presentation.commands.var_command import VarCommand
 from lib.presentation.repl import REPLEnvironment
@@ -15,7 +17,9 @@ def step_impl_game_initialized(context):
         context.base_dir = Path(context.temp_dir)
 
     if not hasattr(context, "repl") or context.repl is None:
-        state = StateFactory.create(context.base_dir)
+        state = StateFactory.create(
+            context.base_dir, MagicMock(spec=MusicPlayerProtocol)
+        )
         from lib.presentation.console import MockConsole
 
         context.console = MockConsole(inputs=[])
@@ -55,9 +59,10 @@ def step_impl_type_command(context, command):
             context.last_output = captured
         else:
             context.last_output = str(context.last_output) + "\n" + captured
-            
+
     # Bridge for compatibility with journal_command_steps.py
     context.result = context.last_output
+
 
 @then('I should see "{expected_output}"')
 def step_impl_should_see(context, expected_output):
@@ -71,7 +76,11 @@ def step_impl_should_see(context, expected_output):
 def step_impl_file_content(context, filename):
     file_path = context.base_dir / filename
     file_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(file_path, "wb") if filename.endswith(".toml") else open(file_path, "w") as f:
+    with (
+        open(file_path, "wb")
+        if filename.endswith(".toml")
+        else open(file_path, "w") as f
+    ):
         if filename.endswith(".toml"):
             f.write(context.text.encode("utf-8"))
         else:

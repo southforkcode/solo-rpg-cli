@@ -25,13 +25,14 @@ class TestREPLEnvironment(unittest.TestCase):
         self.gamedir = Path("test_gamedir")
         self.gamedir.mkdir(parents=True, exist_ok=True)
         # Ensure state provides necessary managers
+        from unittest.mock import MagicMock
+
         from lib.core.journal import JournalManager
         from lib.core.journey import JourneyManager
         from lib.core.macro import MacroManager
         from lib.core.settings import SettingsManager
         from lib.core.table import TableManager
         from lib.core.variable import VariableManager
-        from unittest.mock import MagicMock
 
         self.state = State(
             base_dir=self.gamedir,

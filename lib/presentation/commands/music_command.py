@@ -1,7 +1,9 @@
+from rich.console import Console
+
 from lib.core.state import State
 from lib.presentation.command import Command
 from lib.presentation.lexer import Lexer
-from rich.console import Console
+
 
 class MusicCommand(Command):
     """Command for controlling background music playback."""
@@ -35,13 +37,15 @@ class MusicCommand(Command):
 
         if len(words) == 3 and not is_new_word and words[1] == "play":
             prefix = words[2].lower()
-            return [p for p in state.music_manager.list_playlists() if p.startswith(prefix)]
+            return [
+                p for p in state.music_manager.list_playlists() if p.startswith(prefix)
+            ]
 
         return []
 
     def execute(self, lexer: Lexer, state: State) -> object:
         subcommand = lexer.next()
-        
+
         if not subcommand:
             return self.help()
 
@@ -52,8 +56,14 @@ class MusicCommand(Command):
                 return f"Playing music from playlist '{name}'."
             else:
                 if playlist:
-                    return f"Error: Playlist '{playlist}' not found or contains no compatible audio."
-                return "Error: No compatible audio found in the music directory, and no playlist specified."
+                    return (
+                        f"Error: Playlist '{playlist}' not found "
+                        f"or contains no compatible audio."
+                    )
+                return (
+                    "Error: No compatible audio found in the music directory, "
+                    "and no playlist specified."
+                )
         elif subcommand == "stop":
             state.music_manager.stop()
             return "Music stopped."
@@ -77,10 +87,15 @@ class MusicCommand(Command):
                 return f"Current volume: {state.music_manager.volume * 100:.0f}%"
             try:
                 vol = float(vol_str)
-                if vol > 1.0:
+                # If they provided > 1, assume it's a percentage
+                if vol > 1.0 or vol_str.isdigit():
                     vol = vol / 100.0
                 state.music_manager.set_volume(vol)
-                return f"Volume set to {state.music_manager.volume * 100:.0f}%"
+                # Calculate the percentage *after* setting to reflect actual clamped vol
+                # We do not have direct access to the new volume since it's a property,
+                # but we can just use the vol we passed in clamped
+                clamped_vol = max(0.0, min(1.0, vol))
+                return f"Volume set to {clamped_vol * 100:.0f}%"
             except ValueError:
                 return "Error: Invalid volume level."
         else:
@@ -88,10 +103,31 @@ class MusicCommand(Command):
 
     def help(self):
         console = Console()
-        console.print("[bold cyan]music[/bold cyan]|[bold cyan]m[/bold cyan] [bold]play[/bold] [italic]<playlist>[/italic] - start playing a playlist")
-        console.print("[bold cyan]music[/bold cyan]|[bold cyan]m[/bold cyan] [bold]stop[/bold] - stop music playback")
-        console.print("[bold cyan]music[/bold cyan]|[bold cyan]m[/bold cyan] [bold]next[/bold]|[bold]skip[/bold] - skip to the next track")
-        console.print("[bold cyan]music[/bold cyan]|[bold cyan]m[/bold cyan] [bold]pause[/bold] - pause music")
-        console.print("[bold cyan]music[/bold cyan]|[bold cyan]m[/bold cyan] [bold]resume[/bold] - resume paused music")
-        console.print("[bold cyan]music[/bold cyan]|[bold cyan]m[/bold cyan] [bold]list[/bold] - list available playlists")
-        console.print("[bold cyan]music[/bold cyan]|[bold cyan]m[/bold cyan] [bold]vol[/bold] \\[[italic]0-100[/italic]] - check or set volume")
+        console.print(
+            "[bold cyan]music[/bold cyan]|[bold cyan]m[/bold cyan] "
+            "[bold]play[/bold] [italic]<playlist>[/italic] - start playing a playlist"
+        )
+        console.print(
+            "[bold cyan]music[/bold cyan]|[bold cyan]m[/bold cyan] "
+            "[bold]stop[/bold] - stop music playback"
+        )
+        console.print(
+            "[bold cyan]music[/bold cyan]|[bold cyan]m[/bold cyan] "
+            "[bold]next[/bold]|[bold]skip[/bold] - skip to the next track"
+        )
+        console.print(
+            "[bold cyan]music[/bold cyan]|[bold cyan]m[/bold cyan] "
+            "[bold]pause[/bold] - pause music"
+        )
+        console.print(
+            "[bold cyan]music[/bold cyan]|[bold cyan]m[/bold cyan] "
+            "[bold]resume[/bold] - resume paused music"
+        )
+        console.print(
+            "[bold cyan]music[/bold cyan]|[bold cyan]m[/bold cyan] "
+            "[bold]list[/bold] - list available playlists"
+        )
+        console.print(
+            "[bold cyan]music[/bold cyan]|[bold cyan]m[/bold cyan] "
+            "[bold]vol[/bold] \\[[italic]0-100[/italic]] - check or set volume"
+        )

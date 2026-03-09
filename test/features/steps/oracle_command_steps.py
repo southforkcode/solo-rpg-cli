@@ -1,7 +1,9 @@
 from pathlib import Path
+from unittest.mock import MagicMock
 
 from behave import then, when
 
+from lib.core.music import MusicPlayerProtocol
 from lib.core.state import StateFactory
 from lib.presentation.commands.oracle_command import OracleCommand
 from lib.presentation.lexer import Lexer
@@ -10,7 +12,9 @@ from lib.presentation.lexer import Lexer
 @when("I execute the oracle command with '{args}'")
 def step_impl_execute_oracle_single_quotes(context, args):
     lexer = Lexer(args)
-    state = StateFactory.create(base_dir=Path("/tmp/dummy"))
+    state = StateFactory.create(
+        base_dir=Path("/tmp/dummy"), music_manager=MagicMock(spec=MusicPlayerProtocol)
+    )
     command = OracleCommand()
     context.error = None
     context.result = None
@@ -25,7 +29,9 @@ def step_impl_execute_oracle(context, args):
     # Depending on how the string is parsed in Behave,
     # the steps parser might strip outer quotes from the step definition string.
     lexer = Lexer(args)
-    state = StateFactory.create(base_dir=Path("/tmp/dummy"))
+    state = StateFactory.create(
+        base_dir=Path("/tmp/dummy"), music_manager=MagicMock(spec=MusicPlayerProtocol)
+    )
     command = OracleCommand()
     context.error = None
     context.result = None
@@ -38,7 +44,9 @@ def step_impl_execute_oracle(context, args):
 @when("I execute the oracle command without arguments")
 def step_impl_execute_oracle_no_args(context):
     lexer = Lexer("")
-    state = StateFactory.create(base_dir=Path("/tmp/dummy"))
+    state = StateFactory.create(
+        base_dir=Path("/tmp/dummy"), music_manager=MagicMock(spec=MusicPlayerProtocol)
+    )
     command = OracleCommand()
     context.error = None
     context.result = None
