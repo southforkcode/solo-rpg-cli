@@ -34,6 +34,7 @@
 - For features, create a new branch. Add one or more test cases for the feature. Make sure the test succeeds.
 - **Code without an accompanying unit test and feature test will be rejected.**
 - Update documentation.
+- Do not write temporary files in the project directory. Use tmp or %temp% based on the OS.
 
 ## Issue Analysis
 
