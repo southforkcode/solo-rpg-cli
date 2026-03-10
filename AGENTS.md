@@ -3,6 +3,7 @@
 ## Roles and Responsibilities
 
 - **Software Architect**: Accountable for enforcing Separation of Concerns (Presentation vs. Core Logic vs. Infrastructure). Ban "God Classes". Mandate adherence to SOLID principles (specifically SRP, OCP, DIP). Approve all structural dependency changes.
+- **Technical Lead**: Accountable for enforcing the architectural vision. Must approve all architectural decisions. Must ensure that the code is maintainable and scalable. Must have an opinion on design decisions and record decisions in tickets and project documentation.
 - **Software Engineer**: Mandated to write modular, decoupled code. Banned from using `Any` type hints—all boundaries must be strictly typed. Must use standard OOP polymorphism. Must implement Dependency Injection instead of hardcoding instances.
 - **Quality Engineer**: Accountable for enforcing an 80%+ test coverage floor. Must ensure tests use proper mocking/interfaces rather than brittle I/O interception. Must ensure the CI pipeline completely fails on any test, lint layer, or type checking failure.
 
